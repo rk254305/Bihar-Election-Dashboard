@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bihar Vidhan Sabha — Constituency Results</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:        #1B2430;
+    --ink-soft:   #2A3544;
+    --parchment:  #F7F3EA;
+    --parchment-dim: #EDE7D8;
+    --paper:      #FFFEFB;
+    --saffron:    #D97D3D;
+    --saffron-dim:#E8A570;
+    --green:      #2F6B4F;
+    --green-dim:  #C9DED2;
+    --brick:      #A8432E;
+    --bronze:     #B08D4F;
+    --line:       #D8D0BC;
+    --line-soft:  #E7E1D2;
+    --ink-faint:  rgba(27,36,48,0.55);
+    --ink-faint2: rgba(27,36,48,0.38);
+    --shadow: 0 1px 2px rgba(27,36,48,0.06), 0 8px 24px -12px rgba(27,36,48,0.18);
+  }
+ 
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--ink);
+    color: var(--ink);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+ 
+  /* ---------- texture backdrop ---------- */
+  .stage{
+    position:relative;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse 1200px 600px at 50% -10%, #2A3748 0%, var(--ink) 60%);
+    padding-bottom: 64px;
+  }
+  .stage::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 64px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0px, rgba(255,255,255,0.025) 1px, transparent 1px, transparent 64px);
+    pointer-events:none;
+  }
+ 
+  /* ---------- header ---------- */
+  header{
+    position:relative;
+    padding: 40px 24px 28px;
+    text-align:center;
+    color: var(--parchment);
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color: var(--saffron-dim);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    margin-bottom: 14px;
+  }
+  .eyebrow .dot{width:5px;height:5px;border-radius:50%;background:var(--saffron-dim);}
+  .eyebrow.live .dot{ background: #6FCF97; animation: pulse-dot 1.8s ease-in-out infinite; }
+  @keyframes pulse-dot{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size: clamp(28px, 5vw, 46px);
+    line-height:1.08;
+    margin: 0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  h1 em{
+    font-style:italic;
+    font-weight:500;
+    color: var(--saffron-dim);
+  }
+  .sub{
+    font-size:14.5px;
+    color: rgba(247,243,234,0.62);
+    max-width:560px;
+    margin:0 auto;
+    line-height:1.55;
+  }
+ 
+  /* ---------- shell ---------- */
+  .shell{
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position:relative;
+  }
+ 
+  /* ---------- data status strip ---------- */
+  .data-status{
+    max-width:980px;
+    margin: 0 auto 14px;
+    padding: 0 20px;
+  }
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius:20px;
+    padding:6px 14px 6px 10px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: rgba(247,243,234,0.7);
+  }
+  .status-pill .ring{
+    width:14px;height:14px;
+    border-radius:50%;
+    border:2px solid rgba(247,243,234,0.25);
+    border-top-color: var(--saffron-dim);
+    animation: spin 0.8s linear infinite;
+    flex-shrink:0;
+  }
+  .status-pill.ok .ring{ border:none; width:8px;height:8px; background:#6FCF97; animation:none; }
+  .status-pill.err .ring{ border:none; width:8px;height:8px; background:var(--brick); animation:none; }
+  .status-pill button{
+    background:none; border:none; cursor:pointer;
+    color: var(--saffron-dim);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    text-decoration:underline;
+    padding:0; margin-left:4px;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg);} }
+ 
+  /* ---------- search box ---------- */
+  .search-wrap{
+    background: var(--paper);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 6px;
+    margin-bottom: 14px;
+    position:relative;
+  }
+  .search-inner{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 10px 14px;
+  }
+  .search-inner svg{ flex-shrink:0; color: var(--ink-faint2); }
+  #searchInput{
+    flex:1;
+    border:none;
+    outline:none;
+    background:transparent;
+    font-family:'Inter',sans-serif;
+    font-size:14.5px;
+    font-weight:500;
+    color: var(--ink);
+    min-width:0;
+  }
+  #searchInput::placeholder{ color: var(--ink-faint2); font-weight:400; }
+  .search-clear{
+    background: var(--parchment-dim);
+    border:none;
+    border-radius:50%;
+    width:22px;height:22px;
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color: var(--ink-faint);
+    flex-shrink:0;
+    display:none;
+  }
+  .search-clear.show{ display:flex; }
+  .search-results{
+    position:absolute;
+    left:0; right:0; top:calc(100% + 6px);
+    background: var(--paper);
+    border-radius:14px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--line-soft);
+    max-height: 360px;
+    overflow-y:auto;
+    z-index: 30;
+    display:none;
+  }
+  .search-results.show{ display:block; }
+  .search-results .sr-group-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--ink-faint2);
+    padding: 10px 16px 4px;
+  }
+  .sr-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding: 10px 16px;
+    cursor:pointer;
+    border-top: 1px solid var(--line-soft);
+  }
+  .sr-item:first-of-type{ border-top:none; }
+  .sr-item:hover, .sr-item.active{ background: var(--parchment); }
+  .sr-item .sr-main{ min-width:0; }
+  .sr-item .sr-name{
+    font-size:13.5px;
+    font-weight:600;
+    color: var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sr-item .sr-meta{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color: var(--ink-faint2);
+    margin-top:2px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .sr-item .sr-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    padding:3px 8px;
+    border-radius:6px;
+    background: var(--parchment-dim);
+    color: var(--ink-soft);
+    flex-shrink:0;
+    white-space:nowrap;
+  }
+  .sr-item .sr-tag.won{ background: var(--green); color:#fff; }
+  .search-empty{
+    padding: 22px 16px;
+    text-align:center;
+    font-size:13px;
+    color: var(--ink-faint);
+  }
+ 
+  /* ---------- selector ledger ---------- */
+  .ledger{
+    background: var(--paper);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 22px 24px 24px;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .ledger-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    margin-bottom:16px;
+    padding-bottom:14px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .ledger-title{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:18px;
+    color: var(--ink);
+  }
+  .ledger-count{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: var(--ink-faint2);
+    letter-spacing:0.04em;
+  }
+ 
+  .steps{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap:14px;
+  }
+  @media (max-width: 700px){
+    .steps{grid-template-columns:1fr;}
+  }
+ 
+  .step{
+    position:relative;
+  }
+  .step-label{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--ink-faint);
+    margin-bottom:7px;
+  }
+  .step-label .num{
+    width:16px;height:16px;
+    border-radius:50%;
+    background: var(--ink);
+    color: var(--parchment);
+    font-size:9.5px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .step.disabled .step-label .num{ background: var(--line); color:#fff; }
+  .step.disabled .step-label{ color: var(--ink-faint2); }
+ 
+  select{
+    width:100%;
+    appearance:none;
+    -webkit-appearance:none;
+    background: var(--parchment);
+    border: 1.5px solid var(--line);
+    border-radius:10px;
+    padding: 12px 38px 12px 14px;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:600;
+    color: var(--ink);
+    cursor:pointer;
+    transition: border-color .15s ease, background .15s ease;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231B2430' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat:no-repeat;
+    background-position: right 12px center;
+    background-size:16px;
+  }
+  select:hover{ border-color: var(--bronze); }
+  select:focus{ outline:none; border-color: var(--saffron); box-shadow: 0 0 0 3px rgba(217,125,61,0.18); }
+  select:disabled{
+    background: var(--parchment-dim);
+    color: var(--ink-faint2);
+    cursor:not-allowed;
+    border-color: var(--line-soft);
+  }
+ 
+  /* ---------- empty state ---------- */
+  .empty{
+    margin-top:18px;
+    padding: 48px 24px;
+    text-align:center;
+    background: var(--paper);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  .empty-icon{
+    width:46px;height:46px;
+    margin:0 auto 16px;
+    border-radius:50%;
+    background: var(--parchment);
+    display:flex;align-items:center;justify-content:center;
+    color: var(--bronze);
+  }
+  .empty h3{
+    font-family:'Fraunces',serif;
+    font-size:19px;
+    margin:0 0 6px;
+    color: var(--ink);
+  }
+  .empty p{
+    font-size:13.5px;
+    color: var(--ink-faint);
+    margin:0;
+    max-width:380px;
+    margin:0 auto;
+    line-height:1.6;
+  }
+  .empty.loading .empty-icon{ animation: spin 1s linear infinite; }
+ 
+  /* ---------- zone / lok sabha summary report ---------- */
+  .summary-card{
+    margin-top:18px;
+    background: var(--paper);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow:hidden;
+    animation: rise .35s ease both;
+  }
+  .summary-head{
+    padding: 20px 26px 16px;
+    border-bottom: 1px solid var(--line-soft);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .summary-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--bronze);
+    margin-bottom:6px;
+  }
+  .summary-title{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size: clamp(20px,3vw,26px);
+    color: var(--ink);
+    line-height:1.1;
+  }
+  .summary-stats{
+    display:flex;
+    gap:22px;
+    flex-wrap:wrap;
+  }
+  .summary-stat{ text-align:right; }
+  .summary-stat .v{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:600;
+    color: var(--ink);
+    line-height:1.1;
+  }
+  .summary-stat .l{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color: var(--ink-faint2);
+    margin-top:2px;
+  }
+  .summary-body{ padding: 18px 26px 22px; }
+  .party-bars{ display:flex; flex-direction:column; gap:10px; }
+  .party-bar-row{
+    display:grid;
+    grid-template-columns: 64px 1fr 46px;
+    gap:10px;
+    align-items:center;
+  }
+  .party-bar-row .pname{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    font-weight:700;
+    color: var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .party-bar-track{
+    height:10px;
+    background: var(--parchment-dim);
+    border-radius:5px;
+    overflow:hidden;
+  }
+  .party-bar-fill{
+    height:100%;
+    border-radius:5px;
+    background: linear-gradient(90deg, var(--saffron-dim), var(--saffron));
+    transition: width .5s ease;
+  }
+  .party-bar-row .pcount{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    color: var(--ink-faint);
+    text-align:right;
+  }
+  .summary-subnote{
+    margin-top:16px;
+    padding-top:14px;
+    border-top: 1px solid var(--line-soft);
+    font-size:11.5px;
+    color: var(--ink-faint2);
+    line-height:1.6;
+  }
+  .summary-foot-link{
+    margin-top:14px;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: var(--bronze);
+    cursor:pointer;
+    background:none;
+    border:none;
+    padding:0;
+  }
+  .summary-foot-link:hover{ text-decoration:underline; }
+ 
+  /* breakdown table inside zone summary (lok sabha rows) */
+  .ls-rows{ display:flex; flex-direction:column; gap:8px; margin-top:4px; }
+  .ls-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    padding: 10px 14px;
+    background: var(--parchment);
+    border-radius:10px;
+    cursor:pointer;
+    transition: background .15s ease;
+  }
+  .ls-row:hover{ background: var(--parchment-dim); }
+  .ls-row .ls-name{ font-size:13px; font-weight:600; color: var(--ink); }
+  .ls-row .ls-count{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: var(--ink-faint2);
+  }
+ 
+  /* ---------- sort bar ---------- */
+  .sort-bar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:18px;
+  }
+  .sort-bar .sort-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--ink-faint2);
+    flex-shrink:0;
+  }
+  .sort-bar select{
+    width:auto;
+    padding: 7px 30px 7px 12px;
+    font-size:12.5px;
+    border-radius:8px;
+  }
+ 
+  /* ---------- results ---------- */
+  #results{ margin-top:18px; }
+ 
+  .ac-card{
+    background: var(--paper);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    animation: rise .35s ease both;
+  }
+  @keyframes rise{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+ 
+  .ac-head{
+    padding: 22px 26px 20px;
+    border-bottom: 1px solid var(--line-soft);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .ac-head-left .crumb{
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.06em;
+    color: var(--ink-faint2);
+    text-transform:uppercase;
+    margin-bottom:6px;
+  }
+  .ac-head-left .crumb b{ color: var(--bronze); font-weight:600; }
+  .ac-name{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size: clamp(24px,3.4vw,32px);
+    color: var(--ink);
+    line-height:1.05;
+  }
+  .ac-stats{
+    text-align:right;
+    flex-shrink:0;
+  }
+  .ac-stats .tv-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--ink-faint2);
+  }
+  .ac-stats .tv-value{
+    font-family:'Fraunces',serif;
+    font-size:24px;
+    font-weight:600;
+    color: var(--ink);
+  }
+ 
+  /* winner spotlight */
+  .winner-band{
+    margin: 22px 26px 0;
+    background: linear-gradient(135deg, var(--green) 0%, #244F39 100%);
+    border-radius:14px;
+    padding: 20px 22px;
+    color: var(--parchment);
+    position:relative;
+    overflow:hidden;
+  }
+  .winner-band::after{
+    content:"";
+    position:absolute; right:-30px; top:-30px;
+    width:140px;height:140px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .winner-tag{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    background: rgba(255,255,255,0.14);
+    padding:4px 10px 4px 8px;
+    border-radius:20px;
+    margin-bottom:12px;
+  }
+  .winner-tag svg{width:12px;height:12px;}
+  .winner-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+    gap:16px;
+    flex-wrap:wrap;
+    position:relative;
+  }
+  .winner-name{
+    font-family:'Fraunces',serif;
+    font-size: clamp(22px,3vw,30px);
+    font-weight:600;
+    line-height:1.1;
+    margin-bottom:6px;
+  }
+  .winner-meta{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    align-items:center;
+  }
+  .chip{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    padding: 4px 10px;
+    border-radius:7px;
+    background: rgba(255,255,255,0.14);
+    letter-spacing:0.02em;
+  }
+  .chip.party{ background: rgba(255,255,255,0.22); font-weight:600; }
+  .winner-band.on-light .chip{ background: rgba(27,36,48,0.10); }
+  .winner-band.on-light .chip.party{ background: rgba(27,36,48,0.16); }
+  .winner-band.on-light .winner-tag{ background: rgba(27,36,48,0.10); }
+  .winner-band.on-light .margin-strip,
+  .winner-band.on-light .winner-votes .pct{ opacity:0.75; }
+  .winner-votes{ text-align:right; }
+  .winner-votes .num{
+    font-family:'Fraunces',serif;
+    font-size: clamp(26px,4vw,38px);
+    font-weight:700;
+    line-height:1;
+  }
+  .winner-votes .pct{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    opacity:0.85;
+    margin-top:4px;
+  }
+ 
+  /* margin strip */
+  .margin-strip{
+    margin: 16px 26px 0;
+    padding: 12px 16px;
+    background: var(--parchment);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    gap:12px;
+    border: 1px dashed var(--bronze);
+  }
+  .margin-strip svg{ flex-shrink:0; color:var(--brick); width:16px;height:16px; }
+  .margin-strip .txt{ font-size:12.5px; color:var(--ink-soft); }
+  .margin-strip .txt b{ color:var(--brick); font-weight:700; font-family:'JetBrains Mono',monospace; }
+ 
+  .runnerup-strip{
+    margin: 12px 26px 0;
+    padding: 12px 16px;
+    background: var(--parchment);
+    border-radius:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+    border: 1px solid var(--line-soft);
+  }
+  .runnerup-strip .ru-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: var(--ink-faint2);
+    flex-shrink:0;
+  }
+  .runnerup-strip .ru-main{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    flex:1;
+    min-width:0;
+  }
+  .runnerup-strip .ru-name{
+    font-size:13.5px;
+    font-weight:600;
+    color: var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .runnerup-strip .ru-votes{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    color: var(--ink-faint);
+    flex-shrink:0;
+  }
+ 
+  /* vote share bars */
+  .share-section{
+    padding: 22px 26px 8px;
+  }
+  .share-title{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--ink-faint2);
+    margin-bottom:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+  .share-title::after{
+    content:"";
+    flex:1;
+    height:1px;
+    background: var(--line-soft);
+  }
+ 
+  .cand-row{
+    display:grid;
+    grid-template-columns: 26px 1fr auto;
+    gap:12px;
+    align-items:center;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .cand-row:last-child{ border-bottom:none; }
+  .cand-rank{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: var(--ink-faint2);
+    font-weight:600;
+  }
+  .cand-rank.is-winner{ color: var(--green); }
+  .cand-main{ min-width:0; }
+  .cand-name-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-bottom:6px;
+  }
+  .cand-name{
+    font-size:13.5px;
+    font-weight:600;
+    color: var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .cand-tag{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    padding:2px 7px;
+    border-radius:5px;
+    background: var(--parchment-dim);
+    color: var(--ink-soft);
+    white-space:nowrap;
+  }
+  .cand-tag.party{ background: var(--ink); color: var(--parchment); font-weight:600; }
+  .bar-track{
+    height:7px;
+    background: var(--parchment-dim);
+    border-radius:4px;
+    overflow:hidden;
+  }
+  .bar-fill{
+    height:100%;
+    border-radius:4px;
+    background: linear-gradient(90deg, var(--saffron-dim), var(--saffron));
+    transition: width .6s cubic-bezier(.22,.9,.3,1);
+  }
+  .bar-fill.is-winner{ background: linear-gradient(90deg, #3F8462, var(--green)); }
+  .cand-figs{
+    text-align:right;
+  }
+  .cand-votes{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    font-weight:700;
+    color: var(--ink);
+  }
+  .cand-pct{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color: var(--ink-faint2);
+  }
+ 
+  .ac-foot{
+    padding: 18px 26px 24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:12px;
+    flex-wrap:wrap;
+  }
+  .ac-foot .note{
+    font-size:11.5px;
+    color: var(--ink-faint2);
+    line-height:1.5;
+    max-width:520px;
+  }
+ 
+  /* no-data card */
+  .no-data{
+    padding: 40px 26px;
+    text-align:center;
+  }
+  .no-data p{ color: var(--ink-faint); font-size:13.5px; }
+ 
+  /* ---------- LS 2024 result card ---------- */
+  .ls2024-card{
+    margin-top:18px;
+    background: var(--paper);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow:hidden;
+    animation: rise .35s ease both;
+  }
+  .ls2024-head{
+    padding: 18px 26px 14px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .ls2024-eyebrow{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--bronze);
+    margin-bottom:6px;
+  }
+  .ls2024-title{
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:20px;
+    color: var(--ink);
+  }
+  .ls2024-body{ padding: 18px 26px 22px; display:flex; flex-direction:column; gap:14px; }
+  .ls2024-row{ display:flex; flex-direction:column; gap:6px; }
+  .ls2024-row-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .ls2024-name{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+    font-size:14px;
+    font-weight:700;
+    color: var(--ink);
+  }
+  .ls2024-votes{
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+    font-weight:700;
+    color: var(--ink);
+    text-align:right;
+  }
+  .ls2024-pct{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    color: var(--ink-faint2);
+    text-align:right;
+  }
+  .ls2024-bar-track{
+    height:9px;
+    background: var(--parchment-dim);
+    border-radius:5px;
+    overflow:hidden;
+  }
+  .ls2024-bar-fill{
+    height:100%;
+    border-radius:5px;
+  }
+  .ls2024-foot{
+    padding: 0 26px 20px;
+    font-size:11.5px;
+    color: var(--ink-faint2);
+    line-height:1.6;
+  }
+  .ls2024-unavailable{
+    padding: 28px 26px;
+    text-align:center;
+    color: var(--ink-faint);
+    font-size:13px;
+  }
+ 
+  footer{
+    text-align:center;
+    color: rgba(247,243,234,0.35);
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    letter-spacing:0.04em;
+    padding: 30px 20px 10px;
+  }
+ 
+  ::selection{ background: var(--saffron-dim); color:var(--ink); }
+ 
+  @media (prefers-reduced-motion: reduce){
+    .ac-card{ animation:none; }
+    .bar-fill{ transition:none; }
+    .status-pill .ring{ animation:none; }
+  }
+</style>
+</head>
+<body>
+ 
+<div class="stage">
+  <header>
+    <div class="eyebrow live" id="liveEyebrow"><span class="dot"></span>BIHAR VIDHAN SABHA &middot; RESULT REGISTER<span class="dot"></span></div>
+    <h1><span id="headlineCount">243</span> seats, <em>one constituency</em><br>at a time.</h1>
+    <p class="sub">Search a candidate, party, or place — or work through zone, Lok Sabha, and assembly to see the winning MLA, the full field of runners-up, and a live summary for the zone or constituency you're viewing.</p>
+  </header>
+ 
+  <div class="data-status">
+    <span class="status-pill" id="statusPill"><span class="ring"></span><span id="statusText">Loading live results from Google Sheets…</span></span>
+  </div>
+ 
+  <div class="shell">
+ 
+    <div class="search-wrap">
+      <div class="search-inner">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="searchInput" placeholder="Search candidate, party, assembly, Lok Sabha or zone…" autocomplete="off">
+        <button class="search-clear" id="searchClear" aria-label="Clear search">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+ 
+    <div class="ledger">
+      <div class="ledger-head">
+        <div class="ledger-title">Find a constituency</div>
+        <div class="ledger-count" id="seatCount">— seats indexed</div>
+      </div>
+      <div class="steps">
+        <div class="step" id="step-zone">
+          <div class="step-label"><span class="num">1</span>Zone</div>
+          <select id="zoneSelect">
+            <option value="">Select zone…</option>
+          </select>
+        </div>
+        <div class="step disabled" id="step-ls">
+          <div class="step-label"><span class="num">2</span>Lok Sabha</div>
+          <select id="lsSelect" disabled>
+            <option value="">Select zone first…</option>
+          </select>
+        </div>
+        <div class="step disabled" id="step-ac">
+          <div class="step-label"><span class="num">3</span>Assembly</div>
+          <select id="acSelect" disabled>
+            <option value="">Select Lok Sabha first…</option>
+          </select>
+        </div>
+      </div>
+    </div>
+ 
+    <div id="results">
+      <div class="empty loading" id="emptyState">
+        <div class="empty-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        </div>
+        <h3>Fetching live results…</h3>
+        <p>Pulling the latest data from the published Google Sheet. This only takes a moment.</p>
+      </div>
+    </div>
+  </div>
+ 
+  <footer>DATA SOURCED LIVE FROM GOOGLE SHEETS &middot; AC RESULT + BIHAR GEO DATA TABS &middot; VOTE SHARE AS REPORTED PER ASSEMBLY</footer>
+</div>
+ 
+<script>
+/* @license
+Papa Parse
+v5.5.4
+https://github.com/mholt/PapaParse
+License: MIT
+*/
+((e,t)=>{"function"==typeof define&&define.amd?define([],t):"object"==typeof module&&"undefined"!=typeof exports?module.exports=t():e.Papa=t()})(this,function r(){var n="undefined"!=typeof self?self:"undefined"!=typeof window?window:void 0!==n?n:{};var d,s=!n.document&&!!n.postMessage,a=n.IS_PAPA_WORKER||!1,o={},h=0,v={};function P(e){return 65279===e.charCodeAt(0)?e.slice(1):e}function u(e){this._handle=null,this._finished=!1,this._completed=!1,this._halted=!1,this._input=null,this._baseIndex=0,this._partialLine="",this._rowCount=0,this._start=0,this._nextChunk=null,this.isFirstChunk=!0,this._completeResults={data:[],errors:[],meta:{}},function(e){var t=b(e);t.chunkSize=parseInt(t.chunkSize),e.step||e.chunk||(t.chunkSize=null);this._handle=new i(t),(this._handle.streamer=this)._config=t}.call(this,e),this.parseChunk=function(t,e){var i=parseInt(this._config.skipFirstNLines)||0;if(this.isFirstChunk&&0<i){let e=this._config.newline;e||(r=this._config.quoteChar||'"',e=this._handle.guessLineEndings(t,r)),t=[...t.split(e).slice(i)].join(e)}this.isFirstChunk&&q(this._config.beforeFirstChunk)&&void 0!==(r=this._config.beforeFirstChunk(t))&&(t=r),this.isFirstChunk=!1,this._halted=!1;var i=this._partialLine+t,r=(this._partialLine="",this._handle.parse(i,this._baseIndex,!this._finished));if(!this._handle.paused()&&!this._handle.aborted()){t=r.meta.cursor,i=(this._finished||(this._partialLine=i.substring(t-this._baseIndex),this._baseIndex=t),r&&r.data&&(this._rowCount+=r.data.length),this._finished||this._config.preview&&this._rowCount>=this._config.preview);if(a)n.postMessage({results:r,workerId:v.WORKER_ID,finished:i});else if(q(this._config.chunk)&&!e){if(this._config.chunk(r,this._handle),this._handle.paused()||this._handle.aborted())return void(this._halted=!0);this._completeResults=r=void 0}return this._config.step||this._config.chunk||(this._completeResults.data=this._completeResults.data.concat(r.data),this._completeResults.errors=this._completeResults.errors.concat(r.errors),this._completeResults.meta=r.meta),this._completed||!i||!q(this._config.complete)||r&&r.meta.aborted||(this._config.complete(this._completeResults,this._input),this._completed=!0),i||r&&r.meta.paused||this._nextChunk(),r}this._halted=!0},this._sendError=function(e){q(this._config.error)?this._config.error(e):a&&this._config.error&&n.postMessage({workerId:v.WORKER_ID,error:e,finished:!1})}}function f(e){var r;(e=e||{}).chunkSize||(e.chunkSize=v.RemoteChunkSize),u.call(this,e),this._nextChunk=s?function(){this._readChunk(),this._chunkLoaded()}:function(){this._readChunk()},this.stream=function(e){this._input=e,this._nextChunk()},this._readChunk=function(){if(this._finished)this._chunkLoaded();else{if(r=new XMLHttpRequest,this._config.withCredentials&&(r.withCredentials=this._config.withCredentials),s||(r.onload=y(this._chunkLoaded,this),r.onerror=y(this._chunkError,this)),r.open(this._config.downloadRequestBody?"POST":"GET",this._input,!s),this._config.downloadRequestHeaders){var e,t=this._config.downloadRequestHeaders;for(e in t)r.setRequestHeader(e,t[e])}var i;this._config.chunkSize&&(i=this._start+this._config.chunkSize-1,r.setRequestHeader("Range","bytes="+this._start+"-"+i));try{r.send(this._config.downloadRequestBody)}catch(e){this._chunkError(e.message)}s&&0===r.status&&this._chunkError()}},this._chunkLoaded=function(){4===r.readyState&&(r.status<200||400<=r.status?this._chunkError():(this._start+=this._config.chunkSize||r.responseText.length,this._finished=!this._config.chunkSize||this._start>=(e=>null!==(e=e.getResponseHeader("Content-Range"))?parseInt(e.substring(e.lastIndexOf("/")+1)):-1)(r),this.parseChunk(r.responseText)))},this._chunkError=function(e){e=r.statusText||e;this._sendError(new Error(e))}}function l(e){(e=e||{}).chunkSize||(e.chunkSize=v.LocalChunkSize),u.call(this,e);var i,r,n="undefined"!=typeof FileReader;this.stream=function(e){this._input=e,r=e.slice||e.webkitSlice||e.mozSlice,n?((i=new FileReader).onload=y(this._chunkLoaded,this),i.onerror=y(this._chunkError,this)):i=new FileReaderSync,this._nextChunk()},this._nextChunk=function(){this._finished||this._config.preview&&!(this._rowCount<this._config.preview)||this._readChunk()},this._readChunk=function(){var e=this._input,t=(this._config.chunkSize&&(t=Math.min(this._start+this._config.chunkSize,this._input.size),e=r.call(e,this._start,t)),i.readAsText(e,this._config.encoding));n||this._chunkLoaded({target:{result:t}})},this._chunkLoaded=function(e){this._start+=this._config.chunkSize,this._finished=!this._config.chunkSize||this._start>=this._input.size,this.parseChunk(e.target.result)},this._chunkError=function(){this._sendError(i.error)}}function c(e){var i;u.call(this,e=e||{}),this.stream=function(e){return i=e,this._nextChunk()},this._nextChunk=function(){var e,t;if(!this._finished)return e=this._config.chunkSize,i=e?(t=i.substring(0,e),i.substring(e)):(t=i,""),this._finished=!i,this.parseChunk(t)}}function p(e){u.call(this,e=e||{});var t=[],i=!0,r=!1;this.pause=function(){u.prototype.pause.apply(this,arguments),this._input.pause()},this.resume=function(){u.prototype.resume.apply(this,arguments),this._input.resume()},this.stream=function(e){this._input=e,this._input.on("data",this._streamData),this._input.on("end",this._streamEnd),this._input.on("error",this._streamError)},this._checkIsFinished=function(){r&&1===t.length&&(this._finished=!0)},this._nextChunk=function(){this._checkIsFinished(),t.length?this.parseChunk(t.shift()):i=!0},this._streamData=y(function(e){try{t.push("string"==typeof e?e:e.toString(this._config.encoding)),i&&(i=!1,this._checkIsFinished(),this.parseChunk(t.shift()))}catch(e){this._streamError(e)}},this),this._streamError=y(function(e){this._streamCleanUp(),this._sendError(e)},this),this._streamEnd=y(function(){this._streamCleanUp(),r=!0,this._streamData("")},this),this._streamCleanUp=y(function(){this._input.removeListener("data",this._streamData),this._input.removeListener("end",this._streamEnd),this._input.removeListener("error",this._streamError)},this)}function i(m){var n,s,a,t,o=Math.pow(2,53),h=-o,u=/^\s*-?(\d+\.?|\.\d+|\d+\.\d+)([eE][-+]?\d+)?\s*$/,d=/^((\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z))|(\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d([+-][0-2]\d:[0-5]\d|Z)))$/,i=this,r=0,f=0,l=!1,e=!1,c=[],p={data:[],errors:[],meta:{}};function y(e){return"greedy"===m.skipEmptyLines?""===e.join("").trim():1===e.length&&0===e[0].length}function g(){if(p&&a&&(k("Delimiter","UndetectableDelimiter","Unable to auto-detect delimiting character; defaulted to '"+v.DefaultDelimiter+"'"),a=!1),m.skipEmptyLines&&(p.data=p.data.filter(function(e){return!y(e)})),_()){if(p)if(Array.isArray(p.data[0])){for(var e=0;_()&&e<p.data.length;e++)p.data[e].forEach(t);p.data.splice(0,1)}else p.data.forEach(t);function t(e,t){e=P(e),q(m.transformHeader)&&(e=m.transformHeader(e,t)),c.push(e)}}function i(e,t){for(var i=m.header?{}:[],r=0;r<e.length;r++){var n=r,s=e[r],s=((e,t)=>(e=>(m.dynamicTypingFunction&&void 0===m.dynamicTyping[e]&&(m.dynamicTyping[e]=m.dynamicTypingFunction(e)),!0===(m.dynamicTyping[e]||m.dynamicTyping)))(e)?"true"===t||"TRUE"===t||"false"!==t&&"FALSE"!==t&&((e=>{if(u.test(e)){e=parseFloat(e);if(h<e&&e<o)return 1}})(t)?parseFloat(t):d.test(t)?new Date(t):""===t?null:t):t)(n=m.header?r>=c.length?"__parsed_extra":c[r]:n,s=m.transform?m.transform(s,n):s);"__parsed_extra"===n?(i[n]=i[n]||[],i[n].push(s)):i[n]=s}return m.header&&(r>c.length?k("FieldMismatch","TooManyFields","Too many fields: expected "+c.length+" fields but parsed "+r,f+t):r<c.length&&k("FieldMismatch","TooFewFields","Too few fields: expected "+c.length+" fields but parsed "+r,f+t)),i}var r;p&&(m.header||m.dynamicTyping||m.transform)&&(r=1,!p.data.length||Array.isArray(p.data[0])?(p.data=p.data.map(i),r=p.data.length):p.data=i(p.data,0),m.header&&p.meta&&(p.meta.fields=c),f+=r)}function _(){return m.header&&0===c.length}function k(e,t,i,r){e={type:e,code:t,message:i};void 0!==r&&(e.row=r),p.errors.push(e)}q(m.step)&&(t=m.step,m.step=function(e){p=e,_()?g():(g(),0!==p.data.length&&(r+=e.data.length,m.preview&&r>m.preview?s.abort():(p.data=p.data[0],t(p,i))))}),this.parse=function(e,t,i){var r=m.quoteChar||'"',r=(m.newline||(m.newline=this.guessLineEndings(e,r)),a=!1,m.delimiter?q(m.delimiter)&&(m.delimiter=m.delimiter(e),p.meta.delimiter=m.delimiter):((r=((e,t,i,r,n)=>{var s,a,o,h;n=n||[",","\t","|",";",v.RECORD_SEP,v.UNIT_SEP];for(var u=0;u<n.length;u++){for(var d,f=n[u],l=0,c=0,p=0,g=(o=void 0,new E({comments:r,delimiter:f,newline:t,preview:10}).parse(e)),_=0;_<g.data.length;_++)i&&y(g.data[_])?p++:(d=g.data[_].length,c+=d,void 0===o?o=d:0<d&&(l+=Math.abs(d-o),o=d));0<g.data.length&&(c/=g.data.length-p),(void 0===a||l<=a)&&(void 0===h||h<c)&&1.99<c&&(a=l,s=f,h=c)}return{successful:!!(m.delimiter=s),bestDelimiter:s}})(e,m.newline,m.skipEmptyLines,m.comments,m.delimitersToGuess)).successful?m.delimiter=r.bestDelimiter:(a=!0,m.delimiter=v.DefaultDelimiter),p.meta.delimiter=m.delimiter),b(m));return m.preview&&m.header&&r.preview++,n=e,s=new E(r),p=s.parse(n,t,i),g(),l?{meta:{paused:!0}}:p||{meta:{paused:!1}}},this.paused=function(){return l},this.pause=function(){l=!0,s.abort(),n=q(m.chunk)?"":n.substring(s.getCharIndex())},this.resume=function(){i.streamer._halted?(l=!1,i.streamer.parseChunk(n,!0)):setTimeout(i.resume,3)},this.aborted=function(){return e},this.abort=function(){e=!0,s.abort(),p.meta.aborted=!0,q(m.complete)&&m.complete(p),n=""},this.guessLineEndings=function(e,t){e=e.substring(0,1048576);var t=new RegExp(U(t)+"([^]*?)"+U(t),"gm"),i=(e=e.replace(t,"")).split("\r"),t=e.split("\n"),e=1<t.length&&t[0].length<i[0].length;if(1===i.length||e)return"\n";for(var r=0,n=0;n<i.length;n++)"\n"===i[n][0]&&r++;return r>=i.length/2?"\r\n":"\r"}}function U(e){return e.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")}function E(C){var S=(C=C||{}).delimiter,O=C.newline,x=C.comments,I=C.step,A=C.preview,T=C.fastMode,D=null,L=!1,F=null==C.quoteChar?'"':C.quoteChar,j=F;if(void 0!==C.escapeChar&&(j=C.escapeChar),("string"!=typeof S||-1<v.BAD_DELIMITERS.indexOf(S))&&(S=","),x===S)throw new Error("Comment character same as delimiter");!0===x?x="#":("string"!=typeof x||-1<v.BAD_DELIMITERS.indexOf(x))&&(x=!1),"\n"!==O&&"\r"!==O&&"\r\n"!==O&&(O="\n");var z=0,M=!1;this.parse=function(i,t,r){if("string"!=typeof i)throw new Error("Input must be a string");var n=i.length,e=S.length,s=O.length,a=x.length,o=q(I),h=[],u=[],d=[],f=z=0;if(!i)return w();if(T||!1!==T&&-1===i.indexOf(F)){for(var l=i.split(O),c=0;c<l.length;c++){if(d=l[c],z+=d.length,c!==l.length-1)z+=O.length;else if(r)return w();if(!x||d.substring(0,a)!==x){if(o){if(h=[],k(d.split(S)),R(),M)return w()}else k(d.split(S));if(A&&A<=c)return h=h.slice(0,A),w(!0)}}return w()}for(var p=i.indexOf(S,z),g=i.indexOf(O,z),_=new RegExp(U(j)+U(F),"g"),m=i.indexOf(F,z);;)if(i[z]===F)for(m=z,z++;;){if(-1===(m=i.indexOf(F,m+1)))return r||u.push({type:"Quotes",code:"MissingQuotes",message:"Quoted field unterminated",row:h.length,index:z}),E();if(m===n-1)return E(i.substring(z,m).replace(_,F));if(F===j&&i[m+1]===j)m++;else if(F===j||0===m||i[m-1]!==j){-1!==p&&p<m+1&&(p=i.indexOf(S,m+1));var y=v(-1===(g=-1!==g&&g<m+1?i.indexOf(O,m+1):g)?p:Math.min(p,g));if(i.substr(m+1+y,e)===S){d.push(i.substring(z,m).replace(_,F)),i[z=m+1+y+e]!==F&&(m=i.indexOf(F,z)),p=i.indexOf(S,z),g=i.indexOf(O,z);break}y=v(g);if(i.substring(m+1+y,m+1+y+s)===O){if(d.push(i.substring(z,m).replace(_,F)),b(m+1+y+s),p=i.indexOf(S,z),m=i.indexOf(F,z),o&&(R(),M))return w();if(A&&h.length>=A)return w(!0);break}u.push({type:"Quotes",code:"InvalidQuotes",message:"Trailing quote on quoted field is malformed",row:h.length,index:z}),m++}}else if(x&&0===d.length&&i.substring(z,z+a)===x){if(-1===g)return w();z=g+s,g=i.indexOf(O,z),p=i.indexOf(S,z)}else if(-1!==p&&(p<g||-1===g))d.push(i.substring(z,p)),z=p+e,p=i.indexOf(S,z);else{if(-1===g)break;if(d.push(i.substring(z,g)),b(g+s),o&&(R(),M))return w();if(A&&h.length>=A)return w(!0)}return E();function k(e){h.push(e),f=z}function v(e){var t=0;return t=-1!==e&&(e=i.substring(m+1,e))&&""===e.trim()?e.length:t}function E(e){return r||(void 0===e&&(e=i.substring(z)),d.push(e),z=n,k(d),o&&R()),w()}function b(e){z=e,k(d),d=[],g=i.indexOf(O,z)}function w(e){if(C.header&&!t&&h.length&&!L){var s=h[0],a=Object.create(null),o=new Set(s);let n=!1;for(let r=0;r<s.length;r++){let i=P(s[r]);if(a[i=q(C.transformHeader)?C.transformHeader(i,r):i]){let e,t=a[i];for(;e=i+"_"+t,t++,o.has(e););o.add(e),s[r]=e,a[i]++,n=!0,(D=null===D?{}:D)[e]=i}else a[i]=1,s[r]=i;o.add(i)}n&&console.warn("Duplicate headers found and renamed."),L=!0}return{data:h,errors:u,meta:{delimiter:S,linebreak:O,aborted:M,truncated:!!e,cursor:f+(t||0),renamedHeaders:D}}}function R(){I(w()),h=[],u=[]}},this.abort=function(){M=!0},this.getCharIndex=function(){return z}}function g(e){var t=e.data,i=o[t.workerId],r=!1;if(t.error)i.userError(t.error,t.file);else if(t.results&&t.results.data){var n={abort:function(){r=!0,_(t.workerId,{data:[],errors:[],meta:{aborted:!0}})},pause:m,resume:m};if(q(i.userStep)){for(var s=0;s<t.results.data.length&&(i.userStep({data:t.results.data[s],errors:t.results.errors,meta:t.results.meta},n),!r);s++);delete t.results}else q(i.userChunk)&&(i.userChunk(t.results,n,t.file),delete t.results)}t.finished&&!r&&_(t.workerId,t.results)}function _(e,t){var i=o[e];q(i.userComplete)&&i.userComplete(t),i.terminate(),delete o[e]}function m(){throw new Error("Not implemented.")}function b(e){if("object"!=typeof e||null===e)return e;var t,i=Array.isArray(e)?[]:{};for(t in e)i[t]=b(e[t]);return i}function y(e,t){return function(){e.apply(t,arguments)}}function q(e){return"function"==typeof e}return v.parse=function(e,t){var i=(t=t||{}).dynamicTyping||!1;q(i)&&(t.dynamicTypingFunction=i,i={});if(t.dynamicTyping=i,t.transform=!!q(t.transform)&&t.transform,!t.worker||!v.WORKERS_SUPPORTED)return i=null,v.NODE_STREAM_INPUT,"string"==typeof e?(e=P(e),i=new(t.download?f:c)(t)):!0===e.readable&&q(e.read)&&q(e.on)?i=new p(t):(n.File&&e instanceof File||e instanceof Object)&&(i=new l(t)),i.stream(e);(i=(()=>{var e;return!!v.WORKERS_SUPPORTED&&(e=(()=>{var e=n.URL||n.webkitURL||null,t=r.toString();return v.BLOB_URL||(v.BLOB_URL=e.createObjectURL(new Blob(["var global = (function() { if (typeof self !== 'undefined') { return self; } if (typeof window !== 'undefined') { return window; } if (typeof global !== 'undefined') { return global; } return {}; })(); global.IS_PAPA_WORKER=true; ","(",t,")();"],{type:"text/javascript"})))})(),(e=new n.Worker(e)).onmessage=g,e.id=h++,o[e.id]=e)})()).userStep=t.step,i.userChunk=t.chunk,i.userComplete=t.complete,i.userError=t.error,t.step=q(t.step),t.chunk=q(t.chunk),t.complete=q(t.complete),t.error=q(t.error),delete t.worker,i.postMessage({input:e,config:t,workerId:i.id})},v.unparse=function(e,t){var s=!1,_=!0,m=",",y="\r\n",a='"',o=a+a,i=!1,r=null,h=!1,u=((()=>{if("object"==typeof t){if("string"!=typeof t.delimiter||v.BAD_DELIMITERS.filter(function(e){return-1!==t.delimiter.indexOf(e)}).length||(m=t.delimiter),"boolean"!=typeof t.quotes&&"function"!=typeof t.quotes&&!Array.isArray(t.quotes)||(s=t.quotes),"boolean"!=typeof t.skipEmptyLines&&"string"!=typeof t.skipEmptyLines||(i=t.skipEmptyLines),"string"==typeof t.newline&&(y=t.newline),"string"==typeof t.quoteChar&&(a=t.quoteChar,o=a+a),"boolean"==typeof t.header&&(_=t.header),Array.isArray(t.columns)){if(0===t.columns.length)throw new Error("Option columns is empty");r=t.columns}void 0!==t.escapeChar&&(o=t.escapeChar+a),t.escapeFormulae instanceof RegExp?h=t.escapeFormulae:"boolean"==typeof t.escapeFormulae&&t.escapeFormulae&&(h=/^[=+\-@\t\r].*$/)}})(),new RegExp(U(a),"g"));"string"==typeof e&&(e=JSON.parse(e));if(Array.isArray(e)){if(!e.length||Array.isArray(e[0]))return n(null,e,i);if("object"==typeof e[0])return n(r||Object.keys(e[0]),e,i)}else if("object"==typeof e)return"string"==typeof e.data&&(e.data=JSON.parse(e.data)),Array.isArray(e.data)&&(e.fields||(e.fields=e.meta&&e.meta.fields||r),e.fields||(e.fields=Array.isArray(e.data[0])?e.fields:"object"==typeof e.data[0]?Object.keys(e.data[0]):[]),Array.isArray(e.data[0])||"object"==typeof e.data[0]||(e.data=[e.data])),n(e.fields||[],e.data||[],i);throw new Error("Unable to serialize unrecognized input");function n(e,t,i){var r="",n=("string"==typeof e&&(e=JSON.parse(e)),"string"==typeof t&&(t=JSON.parse(t)),Array.isArray(e)&&0<e.length),s=!Array.isArray(t[0]);if(n&&_){for(var a=0;a<e.length;a++)0<a&&(r+=m),r+=k(e[a],a);0<t.length&&(r+=y)}for(var o=0;o<t.length;o++){var h=(n?e:t[o]).length,u=!1,d=n?0===Object.keys(t[o]).length:0===t[o].length;if(i&&!n&&(u="greedy"===i?""===t[o].join("").trim():1===t[o].length&&0===t[o][0].length),"greedy"===i&&n){for(var f=[],l=0;l<h;l++){var c=s?e[l]:l;f.push(t[o][c])}u=""===f.join("").trim()}if(!u){for(var p=0;p<h;p++){0<p&&!d&&(r+=m);var g=n&&s?e[p]:p;r+=k(t[o][g],p)}o<t.length-1&&(!i||0<h&&!d)&&(r+=y)}}return r}function k(e,t){var i,r,n;return null==e?"":e.constructor===Date?JSON.stringify(e).slice(1,25):(n=!1,h&&"string"==typeof e&&h.test(e)&&(e="'"+e,n=!0),r=(i=e.toString()).replace(u,o),(n=n||!0===s||"function"==typeof s&&s(e,t)||Array.isArray(s)&&s[t]||((e,t)=>{for(var i=0;i<t.length;i++)if(-1<e.indexOf(t[i]))return!0;return!1})(r,v.BAD_DELIMITERS)||-1<r.indexOf(m)||-1<i.indexOf(a)||" "===r.charAt(0)||" "===r.charAt(r.length-1))?a+r+a:r)}},v.RECORD_SEP=String.fromCharCode(30),v.UNIT_SEP=String.fromCharCode(31),v.BYTE_ORDER_MARK="\ufeff",v.BAD_DELIMITERS=["\r","\n",'"',v.BYTE_ORDER_MARK],v.WORKERS_SUPPORTED=!s&&!!n.Worker,v.NODE_STREAM_INPUT=1,v.LocalChunkSize=10485760,v.RemoteChunkSize=5242880,v.DefaultDelimiter=",",v.Parser=E,v.ParserHandle=i,v.NetworkStreamer=f,v.FileStreamer=l,v.StringStreamer=c,v.ReadableStreamStreamer=p,n.jQuery&&((d=n.jQuery).fn.parse=function(o){var i=o.config||{},h=[];return this.each(function(e){if(!("INPUT"===d(this).prop("tagName").toUpperCase()&&"file"===d(this).attr("type").toLowerCase()&&n.FileReader)||!this.files||0===this.files.length)return!0;for(var t=0;t<this.files.length;t++)h.push({file:this.files[t],inputElem:this,instanceConfig:d.extend({},i)})}),e(),this;function e(){if(0===h.length)q(o.complete)&&o.complete();else{var e,t,i,r,n=h[0];if(q(o.before)){var s=o.before(n.file,n.inputElem);if("object"==typeof s){if("abort"===s.action)return e="AbortError",t=n.file,i=n.inputElem,r=s.reason,void(q(o.error)&&o.error({name:e},t,i,r));if("skip"===s.action)return void u();"object"==typeof s.config&&(n.instanceConfig=d.extend(n.instanceConfig,s.config))}else if("skip"===s)return void u()}var a=n.instanceConfig.complete;n.instanceConfig.complete=function(e){q(a)&&a(e,n.file,n.inputElem),u()},v.parse(n.file,n.instanceConfig)}}function u(){h.splice(0,1),e()}}),a&&(n.onmessage=function(e){e=e.data;void 0===v.WORKER_ID&&e&&(v.WORKER_ID=e.workerId);"string"==typeof e.input?n.postMessage({workerId:v.WORKER_ID,results:v.parse(e.input,e.config),finished:!0}):(n.File&&e.input instanceof File||e.input instanceof Object)&&(e=v.parse(e.input,e.config))&&n.postMessage({workerId:v.WORKER_ID,results:e,finished:!0})}),(f.prototype=Object.create(u.prototype)).constructor=f,(l.prototype=Object.create(u.prototype)).constructor=l,(c.prototype=Object.create(c.prototype)).constructor=c,(p.prototype=Object.create(u.prototype)).constructor=p,v});
+</script>
+<script>
+(function(){
+  'use strict';
+ 
+  // ============================================================
+  // CONFIG — published Google Sheet (publish-to-web token form)
+  // ============================================================
+  var PUB_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTS7hLPbuyjNhmq4DfID6awywqonpeaX3ZAFbMyvrj4x5D0t3y-5OgTgsDU90AivJ69fQMXaZnY-BiO/pub';
+  var GIDS = ['738035967', '1015524515', '415754199']; // discovered tab gids; sheet identity is detected by header, not order
+ 
+  function csvUrl(gid){
+    return PUB_BASE + '?output=csv&gid=' + gid + '&single=true&_=' + Date.now();
+  }
+ 
+  // ============================================================
+  // DOM refs
+  // ============================================================
+  var statusPill   = document.getElementById('statusPill');
+  var statusText   = document.getElementById('statusText');
+  var liveEyebrow  = document.getElementById('liveEyebrow');
+  var seatCount    = document.getElementById('seatCount');
+  var zoneSelect   = document.getElementById('zoneSelect');
+  var lsSelect     = document.getElementById('lsSelect');
+  var acSelect     = document.getElementById('acSelect');
+  var stepLs       = document.getElementById('step-ls');
+  var stepAc       = document.getElementById('step-ac');
+  var resultsEl    = document.getElementById('results');
+  var emptyState   = document.getElementById('emptyState');
+  var searchInput  = document.getElementById('searchInput');
+  var searchClear  = document.getElementById('searchClear');
+  var searchResultsEl = document.getElementById('searchResults');
+ 
+  // ============================================================
+  // State
+  // ============================================================
+  var DATA = [];          // array of assembly result records (same shape as before)
+  var tree = {};          // zone -> lokSabha -> [records]
+  var byAssembly = {};    // "zone|||ls|||assembly" -> record
+  var currentView = { zone:'', ls:'', ac:'' };
+  var seatSortMode = 'name'; // current sort applied to the assembly-seats list inside an LS summary
+ 
+  // ============================================================
+  // Helpers — string normalization
+  // ============================================================
+  function normName(s){
+    if(!s) return '';
+    s = String(s).trim();
+    s = s.replace(/^\d+\.\s*/, '');       // strip leading "4. "
+    s = s.replace(/-/g, ' ');
+    s = s.replace(/\s+/g, ' ');
+    return s.trim().toLowerCase();
+  }
+ 
+  // manual alias table for assembly-name spelling drift between
+  // "AC Result" (Constituency) and "Bihar Geo Data" (Assembly)
+  var ASSEMBLY_ALIASES = {
+    'bibhutpur': 'bibhutipur',
+    'bhabhua': 'bhabua',
+    'bodh gaya': 'bodh gaya (sc)',
+    'kusheshwar asthan': 'kusheshwar asthan (sc)',
+    'purnea': 'purnia',
+    'mohiuddin nagar': 'mohiuddinnagar',
+    'surajgarha': 'suryagarha',
+    'kesariya': 'kesaria',
+    'dhuraiya': 'dhoraiya (sc)',
+    'bhorey (sc)': 'bhore (sc)',
+    'raja pakar': 'raja pakar (sc)'
+  };
+ 
+  function resolveGeoKey(constituencyName){
+    var key = normName(constituencyName);
+    if(ASSEMBLY_ALIASES[key]) return ASSEMBLY_ALIASES[key];
+    return key;
+  }
+ 
+  // alias table for Lok Sabha name spelling drift between Bihar Geo Data's
+  // "Lok Sabha" column and the hardcoded 2024 Lok Sabha result list below
+  var LOKSABHA_ALIASES = {
+    'purnea': 'purnia',
+    'jhanjharpur': 'jhanjharpur',
+    'valmiki nagar': 'valmiki nagar'
+  };
+  function resolveLsKey(lsName){
+    var key = normName(lsName);
+    if(LOKSABHA_ALIASES[key]) return LOKSABHA_ALIASES[key];
+    return key;
+  }
+ 
+  function fmtNum(n){
+    if(n === null || n === undefined || isNaN(n)) return '—';
+    return Number(n).toLocaleString('en-IN');
+  }
+  function fmtPct(p){
+    if(p === null || p === undefined || isNaN(p)) return '—';
+    return Number(p).toFixed(2) + '%';
+  }
+  // Display-only party label normalization. Underlying data keeps the raw
+  // source value (used for grouping/joins/search) — only the rendered text
+  // is adjusted, so e.g. zone-summary party tallies still group correctly.
+  var PARTY_DISPLAY_OVERRIDES = {
+    'jd(u)': 'JDU',
+    'inc': 'Congress',
+    'cpi(m)': 'CPI(M)',
+    'cpi(ml) (l)': 'CPI(ML) Liberation',
+    'ljp (rv)': 'LJP (Ram Vilas)',
+    'ljprv': 'LJP (Ram Vilas)',
+    'hams': 'HAM(S)',
+    'ham': 'HAM(S)',
+    'vip_2': 'VIP',
+    'aimeiem': 'AIMIM',
+    'mimm': 'AIMIM',
+    'ind': 'Independent',
+    'cpim': 'CPI(M)',
+    'cpiml': 'CPI(ML) Liberation',
+    'asp-kr': 'ASP (Kanshi Ram)',
+    'rlm': 'RLM',
+    'vsip': 'VSIP'
+  };
+  function fmtParty(party){
+    if(!party) return party;
+    var key = String(party).trim().toLowerCase();
+    return PARTY_DISPLAY_OVERRIDES[key] || party;
+  }
+ 
+  // Official party colors, keyed by the SAME normalized keys used above so
+  // a party is recognized for coloring regardless of which raw source code
+  // (e.g. "JD(U)" vs "JDU") it came in as. Parties not in this list fall
+  // back to the deterministic hue-from-name coloring used elsewhere
+  // (zone/LS summary bars), so nothing breaks for the other ~140 smaller
+  // party codes present in the data.
+  var PARTY_COLORS = {
+    'bjp': '#FF9933',
+    'jd(u)': '#00843D',
+    'jdu': '#00843D',
+    'rjd': '#00A651',
+    'inc': '#19A0DB',
+    'congress': '#19A0DB',
+    'cpi': '#D50000',
+    'cpi(m)': '#B71C1C',
+    'cpi(ml) (l)': '#E53935',
+    'cpi(ml) liberation': '#E53935',
+    'cpim': '#B71C1C',
+    'cpiml': '#E53935',
+    'ljp (rv)': '#1976D2',
+    'ljp (ram vilas)': '#1976D2',
+    'ljprv': '#1976D2',
+    'rljp': '#0D47A1',
+    'hams': '#795548',
+    'ham(s)': '#795548',
+    'ham': '#795548',
+    'vip_2': '#8E24AA',
+    'vip': '#8E24AA',
+    'vsip': '#5E35B1',
+    'aimeiem': '#00695C',
+    'mimm': '#00695C',
+    'aimim': '#00695C',
+    'bsp': '#1565C0',
+    'aap': '#1E88E5',
+    'jsp_5': '#FFDC01',
+    'jsp_6': '#FFDC01',
+    'jsp': '#FFDC01',
+    'asp-kr': '#6D4C41',
+    'asp(kr)': '#6D4C41',
+    'rlm': '#00838F',
+    'ind': '#9E9E9E',
+    'independent': '#9E9E9E'
+  };
+  // Colors that need dark text for readability (the lighter/brighter ones)
+  var PARTY_COLORS_NEEDS_DARK_TEXT = {
+    'jsp_5': 1, 'jsp_6': 1, 'jsp': 1
+  };
+  function partyColor(party){
+    if(!party) return null;
+    var key = String(party).trim().toLowerCase();
+    return PARTY_COLORS[key] || null;
+  }
+  function partyNeedsDarkText(party){
+    if(!party) return false;
+    var key = String(party).trim().toLowerCase();
+    return !!PARTY_COLORS_NEEDS_DARK_TEXT[key];
+  }
+  // Returns a ready-to-use inline style="..." attribute string for a small
+  // colored tag, or '' to fall back to the default CSS-defined tag color.
+  function partyTagStyle(party){
+    var c = partyColor(party);
+    if(!c) return '';
+    var dark = partyNeedsDarkText(party);
+    return ' style="background:' + c + ';color:' + (dark ? '#1B2430' : '#fff') + ';"';
+  }
+  function shadeColor(hex, percent){
+    hex = hex.replace('#','');
+    var num = parseInt(hex, 16);
+    var r = (num >> 16) + Math.round(255 * (percent/100));
+    var g = ((num >> 8) & 0x00FF) + Math.round(255 * (percent/100));
+    var b = (num & 0x0000FF) + Math.round(255 * (percent/100));
+    r = Math.max(0, Math.min(255, r));
+    g = Math.max(0, Math.min(255, g));
+    b = Math.max(0, Math.min(255, b));
+    return '#' + (0x1000000 + r*0x10000 + g*0x100 + b).toString(16).slice(1);
+  }
+  function escapeHtml(s){
+    if(s === null || s === undefined) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function ordinal(n){
+    var s = ['th','st','nd','rd'], v = n % 100;
+    return n + (s[(v-20)%10] || s[v] || s[0]);
+  }
+  function rankLabel(rank){
+    if(rank === 'Winner') return 'Won';
+    var m = /^Runner-(\d+)$/.exec(rank);
+    if(m){
+      var n = parseInt(m[1], 10);
+      return n === 1 ? 'Runner Up' : (ordinal(n) + ' Runner Up');
+    }
+    return rank;
+  }
+  function rankShort(rank, idx){
+    if(rank === 'Winner') return 'W';
+    return '#' + (idx+1);
+  }
+
+  // ============================================================
+  // Hardcoded Lok Sabha (2024) results — gid=1701375308
+  // Top 3 finishers per Lok Sabha seat, as published. Keyed by the
+  // normalized Lok Sabha name (via resolveLsKey) so it lines up with the
+  // Lok Sabha names coming from the Bihar Geo Data tab regardless of
+  // which assembly the user is browsing.
+  // ============================================================
+  var LS_2024_RAW = [
+    ['Valmiki Nagar', ['Sunil Kumar','JDU',523422], ['Deepak Yadav','RJD',424747], ['Shaifi Mohammad Miya','ASP-KR',13432]],
+    ['Paschim Champaran', ['Dr. Sanjay Jaiswal','BJP',580421], ['Madan Mohan Tiwari','INC',443953], ['Dilip Verma','IND',19451]],
+    ['Purvi Champaran', ['Radha Mohan Singh','BJP',542193], ['Dr. Rajesh Kumar','VIP',453865], ['Umesh Shah','BSP',17914]],
+    ['Sheohar', ['Lovely Anand','JDU',476612], ['Ritu Jaiswal','RJD',447469], ['Yogendra Ram','IND',15106]],
+    ['Sitamarhi', ['Devesh Chandra Thakur','JDU',515719], ['Arjun Rai','RJD',464463], ['Ramesh Kumar Mehto','IND',15861]],
+    ['Madhubani', ['Ashok Kumar Yadav','BJP',553428], ['Ali Ashraf Fatmi','RJD',401483], ['Dharmendra Kumar','IND',22031]],
+    ['Jhanjharpur', ['Ramprit Mandal','JDU',533032], ['Suman Kumar Mahaseth','VIP',348863], ['Gulab Yadav','BSP',191154]],
+    ['Supaul', ['Dileshwar Kamait','JDU',595038], ['Chandrahas Chaupal','RJD',425235], ['Narendra Kumar','IND',21348]],
+    ['Araria', ['Pradeep Kumar Singh','BJP',600146], ['M. Shahnawaz Alam','RJD',580052], ['Shatrughan Pd Suman','IND',23204]],
+    ['Kishanganj', ['Mohammad Jawed','INC',402850], ['Mujahid Alam','JDU',343158], ['Akhtarul Iman','AIMIM',309264]],
+    ['Katihar', ['Tariq Anwar','INC',567092], ['Dulal Chandra Goswami','JDU',517229], ['Gopal Pd. Mahto','IND',16984]],
+    ['Purnia', ['Rajesh Ranjan @ Pappu Yadav','IND',567556], ['Santosh Kushwaha','JDU',543709], ['Bima Bharti','RJD',27120]],
+    ['Madhepura', ['Dinesh Chandra Yadav','JDU',640649], ['Kumar Chandradeep','RJD',466115], ['Mohan Sah','IND',15313]],
+    ['Darbhanga', ['Gopal Jee Thakur','BJP',566630], ['Lalit Kumar Yadav','RJD',388474], ['Ram Narayan Mahato','IND',14249]],
+    ['Muzaffarpur', ['Raj Bhushan Nishad','BJP',619749], ['Ajay Nishad','INC',384822], ['Ritesh Kumar','BSP',15224]],
+    ['Vaishali', ['Veena Devi','LJPRV',567043], ['Vijay Kumar Shukla','RJD',477373], ['S.M. Jha','IND',22810]],
+    ['Gopalganj (SC)', ['Alok Kumar Suman','JDU',518445], ['Prem Nath Chanchal','VIP',249265], ['Dinanath Majhi','BSP',40432]],
+    ['Siwan', ['Vijay Lakshmi Devi','JDU',386508], ['Hena Shahab','IND',293651], ['Awadh Bihari Choudhary','RJD',198823]],
+    ['Maharajganj', ['Janardan Singh Sigriwal','BJP',529533], ['Akash Prasad Singh','INC',426882], ['Madhu Singh','BSP',14082]],
+    ['Saran', ['Rajiv Pratap Rudy','BJP',471752], ['Rohini Acharya','RJD',458091], ['Dhananjay Pd. Singh','IND',15108]],
+    ['Hajipur (SC)', ['Chirag Paswan','LJPRV',615718], ['Shiv Chandra Ram','RJD',445613], ['Savitri Devi','BSP',10250]],
+    ['Ujiarpur', ['Nityanand Rai','BJP',515965], ['Alok Kumar Mehta','RJD',455863], ['Vinay Kumar','BSP',13296]],
+    ['Samastipur (SC)', ['Shambhavi Choudhary','LJPRV',579786], ['Sunny Hazari','INC',392535], ['Arvind Kumar Sahani','IND',22234]],
+    ['Begusarai', ['Giriraj Singh','BJP',649331], ['Abdhus Samad','CPI',567851], ['Ravindra Kumar','IND',13858]],
+    ['Khagaria', ['Rajesh Verma','LJPRV',537862], ['Sanjay Kumar','CPIM',376731], ['Devkant Roy','IND',25274]],
+    ['Bhagalpur', ['Ajay Kumar Mandal','JDU',536031], ['Ajeet Sharma','INC',431163], ['Ranjeet Kumar','IND',17921]],
+    ['Banka', ['Giridhari Yadav','JDU',476677], ['Jai Prakash N. Yadav','RJD',372833], ['Sitaram Yadav','BSP',20563]],
+    ['Munger', ['Rajiv Ranjan Singh','JDU',551767], ['Kumari Anita','RJD',470897], ['Md. Kamran','IND',10751]],
+    ['Nalanda', ['Kaushalendra Kumar','JDU',521988], ['Sandeep Saurav','CPIML',352874], ['Mohammad Imran','BSP',13832]],
+    ['Patna Sahib', ['Ravi Shankar Prasad','BJP',588270], ['Anshul Avijit','INC',434424], ['Lallan Kumar','IND',11215]],
+    ['Pataliputra', ['Misa Bharti','RJD',613283], ['Ram Kripal Yadav','BJP',528109], ['Raju Kumar','IND',12479]],
+    ['Arrah', ['Sudama Prasad','CPIML',529382], ['R. K. Singh','BJP',469574], ['Sree Kumar Singh','IND',13313]],
+    ['Buxar', ['Sudhakar Singh','RJD',438345], ['Mithilesh Tiwari','BJP',408254], ['Anand Mishra','IND',95033]],
+    ['Sasaram (SC)', ['Manoj Kumar','INC',433767], ['Shivesh Ram','BJP',414610], ['Sushil Bhagat','BSP',30223]],
+    ['Karakat', ['Raja Ram Singh','CPIML',380581], ['Pawan Singh','IND',274723], ['Upendra Kushwaha','RLM',253876]],
+    ['Jehanabad', ['Surendra Prasad Yadav','RJD',443035], ['Chandeshwar Prasad','JDU',300444], ['Arun Kumar','IND',181960]],
+    ['Aurangabad', ['Abhay Kushwaha','RJD',465567], ['Sushil Kumar Singh','BJP',386456], ['Suresh Singh','BSP',12319]],
+    ['Gaya (SC)', ['Jitan Ram Manjhi','HAM',494960], ['Kumar Sarvjeet','RJD',393148], ['Sushila Devi','BSP',14756]],
+    ['Nawada', ['Vivek Thakur','BJP',410506], ['Shravan Kumar','RJD',342836], ['Gunjan Kumar','IND',61544]],
+    ['Jamui (SC)', ['Arun Bharti','LJPRV',509047], ['Archana Ravidas','RJD',396565], ['Sakaldeo Das','BSP',25622]]
+  ];
+
+  var LS_2024_RESULTS = {}; // normalized lok sabha name -> {assemblyLabel, candidates:[{name,party,votes,rank}]}
+  (function buildLs2024(){
+    LS_2024_RAW.forEach(function(row){
+      var label = row[0];
+      var entries = row.slice(1);
+      var totalVotes = entries.reduce(function(s,e){ return s + e[2]; }, 0);
+      var candidates = entries.map(function(e, idx){
+        return {
+          name: e[0],
+          party: e[1],
+          votes: e[2],
+          pct: totalVotes ? (e[2] / totalVotes * 100) : null,
+          rank: idx === 0 ? 'Winner' : (idx === 1 ? 'Runner-1' : 'Runner-2')
+        };
+      });
+      var key = resolveLsKey(label);
+      LS_2024_RESULTS[key] = { label: label, totalTop3Votes: totalVotes, candidates: candidates };
+    });
+  })();
+
+  function getLs2024Result(lsName){
+    var key = resolveLsKey(lsName);
+    return LS_2024_RESULTS[key] || null;
+  }
+ 
+  // ============================================================
+  // Fetch + parse a published-sheet CSV tab
+  // ============================================================
+  function fetchCsv(gid){
+    return fetch(csvUrl(gid), { cache: 'no-store' })
+      .then(function(res){
+        if(!res.ok) throw new Error('HTTP ' + res.status + ' for gid ' + gid);
+        return res.text();
+      })
+      .then(function(text){
+        var parsed = Papa.parse(text, { header:true, skipEmptyLines:true });
+        return { gid: gid, rows: parsed.data, fields: parsed.meta.fields || [] };
+      });
+  }
+ 
+  function looksLikeAcResult(fields){
+    var f = fields.map(function(x){ return (x||'').trim().toLowerCase(); });
+    return f.indexOf('constituency') !== -1 && f.indexOf('candidate') !== -1 && f.indexOf('votes') !== -1;
+  }
+  function looksLikeGeoData(fields){
+    var f = fields.map(function(x){ return (x||'').trim().toLowerCase(); });
+    return f.indexOf('zone') !== -1 && f.indexOf('assembly') !== -1 && (f.indexOf('lok sabha') !== -1);
+  }
+  function looksLikeCasteSource(fields){
+    var f = fields.map(function(x){ return (x||'').trim().toLowerCase(); });
+    return f.indexOf('assembly') !== -1 && f.indexOf('name') !== -1 &&
+           f.some(function(x){ return x.indexOf('caste') !== -1; });
+  }
+ 
+  function getField(row, name){
+    // tolerant lookup: trims header keys, case-insensitive, handles trailing spaces (e.g. "Block ")
+    var keys = Object.keys(row);
+    for(var i=0;i<keys.length;i++){
+      if(keys[i].trim().toLowerCase() === name.toLowerCase()) return row[keys[i]];
+    }
+    return undefined;
+  }
+ 
+  function buildGeoMap(geoRows){
+    var map = {};
+    geoRows.forEach(function(r){
+      var zone = (getField(r,'Zone')||'').trim();
+      var district = (getField(r,'District')||'').trim();
+      var ls = (getField(r,'Lok Sabha')||'').trim();
+      var assembly = (getField(r,'Assembly')||'').trim();
+      if(!assembly) return;
+      var key = resolveGeoKey(assembly);
+      if(!map[key]) map[key] = { zone: zone, district: district, lokSabha: ls };
+    });
+    return map;
+  }
+ 
+  // Caste is only available, as a clean structured field, for the single
+  // candidate listed per seat in the "JSP Candidate" sheet. We key it by
+  // assembly + exact candidate name so it only ever attaches to a real,
+  // named match — never inferred or guessed for anyone else in the race.
+  function buildCasteMap(casteRows){
+    var map = {};
+    casteRows.forEach(function(r){
+      var assembly = (getField(r,'Assembly')||'').trim();
+      var name = (getField(r,'Name')||'').trim();
+      var caste = (getField(r,'Caste (Caste)') || getField(r,'Caste') || '').trim();
+      if(!assembly || !name || !caste) return;
+      var key = resolveGeoKey(assembly) + '|||' + normName(name);
+      map[key] = caste;
+    });
+    return map;
+  }
+ 
+  // ------------------------------------------------------------
+  // Second caste source: parsed from the free-text "AC/Result Details"
+  // narrative in Bihar Geo Data, e.g.:
+  //   "MLA- Mahesh Paswan(BJP)(Chamar)\nVotes- 69412\nRunner Up- Shiv..."
+  // Caste appears in parentheses next to the MLA/Runner Up name, but so
+  // does the party — sometimes instead of caste, sometimes alongside it,
+  // in no fixed order. We only ever trust a parenthetical as "caste" when
+  // it does NOT match a known party code/name; anything ambiguous is left
+  // blank rather than guessed. This only ever covers MLA (winner) and
+  // Runner Up (first runner-up) labels — lower-ranked runners-up are not
+  // reliably labeled with caste in the source text at all.
+  // ------------------------------------------------------------
+  var NARRATIVE_PARTY_TOKENS = {
+    'aap':1,'aimim':1,'asp':1,'asp-kanshi ram':1,'bjp':1,'bsp':1,'cpi':1,'cpi- ml':1,
+    'cpi-m':1,'cpi-ml':1,'cpim':1,'ham':1,'iip':1,'inc':1,'ind':1,'ind.':1,'independent':1,
+    'jdu':1,'jjd':1,'jsp':1,'ljp':1,'ljp-r':1,'mep':1,'ppi':1,'rjd':1,'rjp':1,'rljp':1,
+    'rlm':1,'sbsp':1,'tiger':1,'vip':1,'vsip':1,'peace party':1,'u':1
+  };
+  var NARRATIVE_LABEL_RE = /(MLA|Runner Up|\d+(?:st|nd|rd|th)\s+Runner Up)\s*[-:]\s*/g;
+  var NARRATIVE_PAREN_RE = /\(([^()]+)\)/g;
+ 
+  function isNarrativePartyToken(tok){
+    return !!NARRATIVE_PARTY_TOKENS[tok.trim().toLowerCase()];
+  }
+ 
+  function extractNarrativeSegments(text){
+    if(!text) return [];
+    var matches = [];
+    var m;
+    NARRATIVE_LABEL_RE.lastIndex = 0;
+    while((m = NARRATIVE_LABEL_RE.exec(text)) !== null){
+      matches.push({ label: m[1], start: m.index, contentStart: NARRATIVE_LABEL_RE.lastIndex });
+    }
+    var segments = [];
+    for(var i=0;i<matches.length;i++){
+      var start = matches[i].contentStart;
+      var end = (i+1 < matches.length) ? matches[i+1].start : text.length;
+      segments.push({ label: matches[i].label, text: text.slice(start, end) });
+    }
+    return segments;
+  }
+ 
+  function extractNarrativeNameAndCaste(segmentText){
+    var firstLine = segmentText.trim().split('\n')[0];
+    var nameMatch = /^([^()]+)/.exec(firstLine);
+    var name = nameMatch ? nameMatch[1].trim().replace(/[-\s]+$/, '') : '';
+ 
+    var parens = [];
+    var pm;
+    NARRATIVE_PAREN_RE.lastIndex = 0;
+    while((pm = NARRATIVE_PAREN_RE.exec(firstLine)) !== null){
+      parens.push(pm[1].trim());
+    }
+    var caste = null;
+    for(var i=0;i<parens.length;i++){
+      var cand = parens[i];
+      if(isNarrativePartyToken(cand)) continue;
+      if(cand.length < 2 || cand.length > 30) continue;
+      if(/\d/.test(cand)) continue;
+      caste = cand;
+      break;
+    }
+    return { name: name, caste: caste };
+  }
+ 
+  function buildNarrativeCasteMap(geoRows){
+    var map = {};
+    geoRows.forEach(function(r){
+      var assembly = (getField(r,'Assembly')||'').trim();
+      var details = getField(r,'AC/Result Details') || '';
+      if(!assembly || !details) return;
+      var geoKey = resolveGeoKey(assembly);
+      var segments = extractNarrativeSegments(details);
+      segments.forEach(function(seg){
+        if(seg.label !== 'MLA' && seg.label !== 'Runner Up') return; // winner + 1st runner-up only
+        var parsed = extractNarrativeNameAndCaste(seg.text);
+        if(!parsed.name || !parsed.caste) return;
+        var key = geoKey + '|||' + normName(parsed.name);
+        if(!map[key]) map[key] = parsed.caste;
+      });
+    });
+    return map;
+  }
+ 
+  function buildAcResults(acRows, geoMap, casteMap, narrativeCasteMap){
+    casteMap = casteMap || {};
+    narrativeCasteMap = narrativeCasteMap || {};
+    // group rows by constituency
+    var byConst = {};
+    acRows.forEach(function(r){
+      var constituency = (getField(r,'Constituency')||'').trim();
+      if(!constituency) return;
+      var candidate = (getField(r,'Candidate')||'').trim();
+      var party = (getField(r,'Party')||'').trim();
+      var votesRaw = getField(r,'Votes');
+      var pctRaw = getField(r,'Vote Share');
+      var posRaw = getField(r,'Position');
+      var wonRaw = (getField(r,'Won')||'').toString().trim().toLowerCase();
+ 
+      var votes = votesRaw !== undefined && votesRaw !== '' ? Number(votesRaw) : null;
+      var pct = pctRaw !== undefined && pctRaw !== '' ? Number(pctRaw) : null;
+      var pos = posRaw !== undefined && posRaw !== '' ? parseInt(posRaw,10) : null;
+      var won = (wonRaw === 'true' || wonRaw === '1' || wonRaw === 'yes');
+ 
+      if(!byConst[constituency]) byConst[constituency] = [];
+      byConst[constituency].push({
+        candidate: candidate, party: party || null,
+        votes: (votes===null || isNaN(votes)) ? null : votes,
+        pct: (pct===null || isNaN(pct)) ? null : pct,
+        position: (pos===null || isNaN(pos)) ? null : pos,
+        won: won
+      });
+    });
+ 
+    var records = [];
+    Object.keys(byConst).forEach(function(constituency){
+      var rows = byConst[constituency].slice().sort(function(a,b){
+        var pa = a.position===null ? 999 : a.position;
+        var pb = b.position===null ? 999 : b.position;
+        return pa - pb;
+      });
+ 
+      var geoKey = resolveGeoKey(constituency);
+      var geo = geoMap[geoKey] || { zone: 'Unmapped', district: '', lokSabha: 'Unmapped' };
+ 
+      var candidates = rows.map(function(r, idx){
+        var rank;
+        if(r.won || r.position === 1) rank = 'Winner';
+        else {
+          // runner-N based on position order among non-winners
+          var runnerIdx = rows.slice(0, idx).filter(function(x){ return !(x.won || x.position===1); }).length + 1;
+          rank = 'Runner-' + runnerIdx;
+        }
+        var casteKey = geoKey + '|||' + normName(r.candidate);
+        var caste = casteMap[casteKey] || narrativeCasteMap[casteKey] || null;
+        return {
+          rank: rank,
+          name: r.candidate || 'Unnamed candidate',
+          party: r.party,
+          caste: caste,
+          votes: r.votes,
+          pct: r.pct
+        };
+      });
+ 
+      var totalVotes = candidates.reduce(function(sum,c){ return sum + (c.votes||0); }, 0);
+      if(totalVotes === 0) totalVotes = null;
+ 
+      records.push({
+        zone: geo.zone || 'Unmapped',
+        lokSabha: geo.lokSabha || 'Unmapped',
+        district: geo.district || '',
+        assembly: constituency,
+        totalVotes: totalVotes,
+        candidates: candidates
+      });
+    });
+ 
+    return records;
+  }
+ 
+  function loadLiveData(){
+    setStatus('loading', 'Loading live results from Google Sheets…');
+    var p1 = fetchCsv(GIDS[0]);
+    var p2 = fetchCsv(GIDS[1]);
+    var p3 = GIDS[2] ? fetchCsv(GIDS[2]) : Promise.resolve(null);
+ 
+    return Promise.all([p1, p2, p3]).then(function(results){
+      results = results.filter(Boolean);
+      var acSheet = null, geoSheet = null, casteSheet = null;
+ 
+      // caste-source check first: its headers are a superset of geo-data's
+      // headers (it also has Zone/Assembly/Lok Sabha), so it must be
+      // distinguished before the broader geo check claims it.
+      results.forEach(function(r){
+        if(looksLikeCasteSource(r.fields)) casteSheet = r;
+      });
+      results.forEach(function(r){
+        if(r === casteSheet) return;
+        if(looksLikeAcResult(r.fields)) acSheet = r;
+        else if(looksLikeGeoData(r.fields)) geoSheet = r;
+      });
+ 
+      if(!acSheet || !geoSheet){
+        // fall back: try matching by content shape rather than just headers
+        results.forEach(function(r){
+          if(r === casteSheet) return;
+          if(!acSheet && r.fields.join('|').toLowerCase().indexOf('candidate') !== -1) acSheet = r;
+          if(!geoSheet && r.fields.join('|').toLowerCase().indexOf('assembly') !== -1 && r !== acSheet) geoSheet = r;
+        });
+      }
+      if(!acSheet || !geoSheet){
+        throw new Error('Could not identify AC Result / Bihar Geo Data tabs from fetched sheets.');
+      }
+ 
+      var geoMap = buildGeoMap(geoSheet.rows);
+      var casteMap = casteSheet ? buildCasteMap(casteSheet.rows) : {};
+      var narrativeCasteMap = buildNarrativeCasteMap(geoSheet.rows);
+      var records = buildAcResults(acSheet.rows, geoMap, casteMap, narrativeCasteMap);
+ 
+      if(records.length === 0){
+        throw new Error('Parsed 0 constituency records from the sheet.');
+      }
+ 
+      DATA = records;
+      setStatus('ok', 'Live · ' + DATA.length + ' seats · synced just now');
+      return DATA;
+    });
+  }
+ 
+  // ============================================================
+  // Status pill
+  // ============================================================
+  function setStatus(kind, text){
+    statusPill.classList.remove('ok','err');
+    statusText.innerHTML = '';
+    if(kind === 'ok'){
+      statusPill.classList.add('ok');
+      statusText.textContent = text;
+    } else if(kind === 'err'){
+      statusPill.classList.add('err');
+      statusText.textContent = text + '  ';
+      var retryBtn = document.createElement('button');
+      retryBtn.textContent = 'Retry';
+      retryBtn.onclick = init;
+      statusText.appendChild(retryBtn);
+    } else {
+      statusText.textContent = text;
+    }
+  }
+ 
+  // ============================================================
+  // Build indices once DATA is loaded
+  // ============================================================
+  function buildIndices(){
+    tree = {};
+    byAssembly = {};
+    DATA.forEach(function(rec){
+      if(!tree[rec.zone]) tree[rec.zone] = {};
+      if(!tree[rec.zone][rec.lokSabha]) tree[rec.zone][rec.lokSabha] = [];
+      tree[rec.zone][rec.lokSabha].push(rec);
+      byAssembly[rec.zone+'|||'+rec.lokSabha+'|||'+rec.assembly] = rec;
+    });
+    seatCount.textContent = DATA.length + ' seats indexed';
+    var headlineCount = document.getElementById('headlineCount');
+    if(headlineCount) headlineCount.textContent = DATA.length;
+  }
+ 
+  // ============================================================
+  // Dropdown population (zone -> lok sabha -> assembly)
+  // ============================================================
+  function clearSelect(sel, placeholder){
+    sel.innerHTML = '';
+    var opt = document.createElement('option');
+    opt.value = ''; opt.textContent = placeholder;
+    sel.appendChild(opt);
+  }
+ 
+  function populateZones(){
+    clearSelect(zoneSelect, 'Select zone…');
+    Object.keys(tree).sort().forEach(function(zone){
+      var opt = document.createElement('option');
+      opt.value = zone;
+      opt.textContent = zone;
+      zoneSelect.appendChild(opt);
+    });
+  }
+ 
+  function populateLokSabha(zone){
+    clearSelect(lsSelect, 'Select Lok Sabha…');
+    if(!zone){
+      lsSelect.disabled = true;
+      stepLs.classList.add('disabled');
+      clearSelect(lsSelect, 'Select zone first…');
+      return;
+    }
+    lsSelect.disabled = false;
+    stepLs.classList.remove('disabled');
+    Object.keys(tree[zone]).sort().forEach(function(ls){
+      var opt = document.createElement('option');
+      opt.value = ls;
+      opt.textContent = ls;
+      lsSelect.appendChild(opt);
+    });
+  }
+ 
+  function populateAssemblies(zone, ls){
+    clearSelect(acSelect, 'Select assembly…');
+    if(!zone || !ls){
+      acSelect.disabled = true;
+      stepAc.classList.add('disabled');
+      clearSelect(acSelect, 'Select Lok Sabha first…');
+      return;
+    }
+    acSelect.disabled = false;
+    stepAc.classList.remove('disabled');
+    var seats = tree[zone][ls].slice().sort(function(a,b){ return a.assembly.localeCompare(b.assembly); });
+    seats.forEach(function(rec){
+      var opt = document.createElement('option');
+      opt.value = rec.assembly;
+      opt.textContent = rec.assembly;
+      acSelect.appendChild(opt);
+    });
+  }
+ 
+  // ============================================================
+  // Party color helper for summary bars (purely visual, deterministic)
+  // ============================================================
+  function partyHue(party){
+    var s = (party||'?');
+    var h = 0;
+    for(var i=0;i<s.length;i++){ h = (h*31 + s.charCodeAt(i)) % 360; }
+    return h;
+  }
+  // Prefer the party's official color for summary bars; fall back to the
+  // deterministic hue-from-name gradient for the ~140 smaller parties we
+  // don't have an official color on file for.
+  function partyBarGradient(party){
+    var c = partyColor(party);
+    if(c) return 'linear-gradient(90deg, ' + shadeColor(c, 18) + ', ' + c + ')';
+    var h = partyHue(party);
+    return 'linear-gradient(90deg, hsl(' + h + ',55%,68%), hsl(' + h + ',55%,46%))';
+  }
+ 
+  // ============================================================
+  // Seat-level margin helper + sort
+  // ============================================================
+  function seatMargin(rec){
+    var cands = rec.candidates || [];
+    var winner = cands.filter(function(c){ return c.rank === 'Winner'; })[0];
+    var runnerUp = cands.filter(function(c){ return c.rank === 'Runner-1'; })[0];
+    if(!winner || !runnerUp || winner.votes == null || runnerUp.votes == null) return null;
+    return winner.votes - runnerUp.votes;
+  }
+  function seatTotalVotes(rec){
+    return (rec.candidates||[]).reduce(function(s,c){ return s + (c.votes||0); }, 0);
+  }
+  function seatWinner(rec){
+    return (rec.candidates||[]).filter(function(c){ return c.rank === 'Winner'; })[0] || null;
+  }
+  var SORT_OPTIONS = [
+    { value:'name', label:'Assembly name (A–Z)' },
+    { value:'margin_high', label:'Highest margin first' },
+    { value:'margin_low', label:'Lowest margin first (closest contests)' },
+    { value:'votes_high', label:'Highest total votes' },
+    { value:'votes_low', label:'Lowest total votes' },
+    { value:'party', label:'Winning party (A–Z)' }
+  ];
+  function sortSeats(seats, mode){
+    var arr = seats.slice();
+    switch(mode){
+      case 'margin_high':
+        return arr.sort(function(a,b){
+          var ma = seatMargin(a), mb = seatMargin(b);
+          if(ma===null) return 1; if(mb===null) return -1;
+          return mb - ma;
+        });
+      case 'margin_low':
+        return arr.sort(function(a,b){
+          var ma = seatMargin(a), mb = seatMargin(b);
+          if(ma===null) return 1; if(mb===null) return -1;
+          return ma - mb;
+        });
+      case 'votes_high':
+        return arr.sort(function(a,b){ return seatTotalVotes(b) - seatTotalVotes(a); });
+      case 'votes_low':
+        return arr.sort(function(a,b){ return seatTotalVotes(a) - seatTotalVotes(b); });
+      case 'party':
+        return arr.sort(function(a,b){
+          var wa = seatWinner(a), wb = seatWinner(b);
+          var pa = wa ? fmtParty(wa.party)||'' : '';
+          var pb = wb ? fmtParty(wb.party)||'' : '';
+          return pa.localeCompare(pb);
+        });
+      case 'name':
+      default:
+        return arr.sort(function(a,b){ return a.assembly.localeCompare(b.assembly); });
+    }
+  }
+  function sortBarHtml(currentMode){
+    var opts = SORT_OPTIONS.map(function(o){
+      return '<option value="' + o.value + '"' + (o.value===currentMode?' selected':'') + '>' + escapeHtml(o.label) + '</option>';
+    }).join('');
+    return '<div class="sort-bar"><span class="sort-label">Sort seats by</span><select id="seatSortSelect">' + opts + '</select></div>';
+  }
+  function wireSortSelect(zone, ls){
+    var sel = document.getElementById('seatSortSelect');
+    if(!sel) return;
+    sel.addEventListener('change', function(){
+      seatSortMode = sel.value;
+      resultsEl.innerHTML = renderLsSummary(zone, ls);
+      wireSummaryClicks();
+      wireSortSelect(zone, ls);
+    });
+  }
+
+  // ============================================================
+  // Candidate-level sort — within a single assembly's result card
+  // ============================================================
+  var candSortMode = 'rank'; // reset whenever a different assembly is opened
+  var CAND_SORT_OPTIONS = [
+    { value:'rank',        label:'Declared result order' },
+    { value:'votes_high',  label:'Highest votes first' },
+    { value:'votes_low',   label:'Lowest votes first' },
+    { value:'margin_high', label:'Largest margin from winner' },
+    { value:'margin_low',  label:'Closest margin to winner' },
+    { value:'pct_high',    label:'Highest vote share %' },
+    { value:'name',        label:'Candidate name (A–Z)' },
+    { value:'party',       label:'Party (A–Z)' }
+  ];
+  function candMarginFromWinner(c, winnerVotes){
+    if(winnerVotes == null || c.votes == null) return null;
+    return winnerVotes - c.votes;
+  }
+  function sortCandidates(cands, mode, winnerVotes){
+    var arr = cands.slice();
+    switch(mode){
+      case 'votes_high':
+        return arr.sort(function(a,b){ return (b.votes||0) - (a.votes||0); });
+      case 'votes_low':
+        return arr.sort(function(a,b){ return (a.votes||0) - (b.votes||0); });
+      case 'margin_high':
+        return arr.sort(function(a,b){
+          var ma = candMarginFromWinner(a, winnerVotes), mb = candMarginFromWinner(b, winnerVotes);
+          if(ma===null) return 1; if(mb===null) return -1;
+          return mb - ma;
+        });
+      case 'margin_low':
+        return arr.sort(function(a,b){
+          var ma = candMarginFromWinner(a, winnerVotes), mb = candMarginFromWinner(b, winnerVotes);
+          if(ma===null) return 1; if(mb===null) return -1;
+          return ma - mb;
+        });
+      case 'pct_high':
+        return arr.sort(function(a,b){ return (b.pct||0) - (a.pct||0); });
+      case 'name':
+        return arr.sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
+      case 'party':
+        return arr.sort(function(a,b){ return (fmtParty(a.party)||'').localeCompare(fmtParty(b.party)||''); });
+      case 'rank':
+      default:
+        return arr; // already in declared rank order
+    }
+  }
+  function candSortBarHtml(currentMode){
+    var opts = CAND_SORT_OPTIONS.map(function(o){
+      return '<option value="' + o.value + '"' + (o.value===currentMode?' selected':'') + '>' + escapeHtml(o.label) + '</option>';
+    }).join('');
+    return '<div class="sort-bar"><span class="sort-label">Sort candidates by</span><select id="candSortSelect">' + opts + '</select></div>';
+  }
+  function wireCandSortSelect(rec){
+    var sel = document.getElementById('candSortSelect');
+    if(!sel) return;
+    sel.addEventListener('change', function(){
+      candSortMode = sel.value;
+      renderResult(rec);
+    });
+  }
+ 
+  // ============================================================
+  // Zone-level summary: seats won by party across the whole zone
+  // ============================================================
+  function renderZoneSummary(zone){
+    var lsMap = tree[zone] || {};
+    var allSeats = [];
+    Object.keys(lsMap).forEach(function(ls){ allSeats = allSeats.concat(lsMap[ls]); });
+ 
+    var partyWins = {};
+    var totalVotesAll = 0;
+    var totalCandidates = 0;
+    allSeats.forEach(function(rec){
+      totalCandidates += (rec.candidates||[]).length;
+      (rec.candidates||[]).forEach(function(c){ totalVotesAll += (c.votes||0); });
+      var winner = (rec.candidates||[]).filter(function(c){ return c.rank === 'Winner'; })[0];
+      if(winner){
+        var p = winner.party || 'Independent / Other';
+        partyWins[p] = (partyWins[p]||0) + 1;
+      }
+    });
+ 
+    var partyRows = Object.keys(partyWins).map(function(p){ return {party:p, seats:partyWins[p]}; })
+      .sort(function(a,b){ return b.seats - a.seats; });
+    var maxSeats = partyRows.length ? partyRows[0].seats : 1;
+ 
+    var lsRowsHtml = Object.keys(lsMap).sort().map(function(ls){
+      return '<div class="ls-row" data-ls="' + escapeHtml(ls) + '">' +
+        '<div class="ls-name">' + escapeHtml(ls) + '</div>' +
+        '<div class="ls-count">' + lsMap[ls].length + ' seats &rarr;</div>' +
+      '</div>';
+    }).join('');
+ 
+    var barsHtml = partyRows.map(function(row){
+      var width = Math.max(4, Math.round(row.seats / maxSeats * 100));
+      return '<div class="party-bar-row">' +
+        '<div class="pname">' + escapeHtml(fmtParty(row.party)) + '</div>' +
+        '<div class="party-bar-track"><div class="party-bar-fill" style="width:' + width + '%; background: ' + partyBarGradient(row.party) + '"></div></div>' +
+        '<div class="pcount">' + row.seats + ' seat' + (row.seats>1?'s':'') + '</div>' +
+      '</div>';
+    }).join('');
+ 
+    var html =
+      '<div class="summary-card" id="zoneSummaryCard">' +
+        '<div class="summary-head">' +
+          '<div>' +
+            '<div class="summary-eyebrow">Zone report</div>' +
+            '<div class="summary-title">' + escapeHtml(zone) + '</div>' +
+          '</div>' +
+          '<div class="summary-stats">' +
+            '<div class="summary-stat"><div class="v">' + allSeats.length + '</div><div class="l">Assembly seats</div></div>' +
+            '<div class="summary-stat"><div class="v">' + Object.keys(lsMap).length + '</div><div class="l">Lok Sabha areas</div></div>' +
+            '<div class="summary-stat"><div class="v">' + fmtNum(totalVotesAll) + '</div><div class="l">Votes counted</div></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="summary-body">' +
+          '<div class="share-title">Seats won by party</div>' +
+          '<div class="party-bars">' + barsHtml + '</div>' +
+          '<div class="summary-subnote">' +
+            '<div class="share-title" style="margin-top:18px;">Lok Sabha areas in this zone — tap to jump</div>' +
+            '<div class="ls-rows">' + lsRowsHtml + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+ 
+    return html;
+  }
+ 
+  // ============================================================
+  // 2024 Lok Sabha election result card
+  // ============================================================
+  function renderLs2024Card(zone, ls){
+    var result = getLs2024Result(ls);
+    if(!result){
+      return '<div class="ls2024-card">' +
+        '<div class="ls2024-head"><div class="ls2024-eyebrow">2024 Lok Sabha election</div><div class="ls2024-title">' + escapeHtml(ls) + '</div></div>' +
+        '<div class="ls2024-unavailable">2024 Lok Sabha result data is not available for this area.</div>' +
+      '</div>';
+  }
+    var maxVotes = Math.max.apply(null, result.candidates.map(function(c){ return c.votes||0; }));
+    var rowsHtml = result.candidates.map(function(c, idx){
+      var isWinner = c.rank === 'Winner';
+      var width = maxVotes > 0 ? Math.max(2, Math.round((c.votes||0) / maxVotes * 100)) : 2;
+      var c1 = partyColor(c.party);
+      var barColor = isWinner ? 'linear-gradient(90deg, #3F8462, var(--green))' :
+        (c1 ? 'linear-gradient(90deg, ' + shadeColor(c1,18) + ', ' + c1 + ')' : 'linear-gradient(90deg, var(--saffron-dim), var(--saffron))');
+      var rankTagText = isWinner ? 'Won' : (c.rank === 'Runner-1' ? 'Runner Up' : '2nd Runner Up');
+      return '<div class="ls2024-row">' +
+        '<div class="ls2024-row-top">' +
+          '<div class="ls2024-name">' + escapeHtml(c.name) +
+            '<span class="cand-tag party"' + partyTagStyle(c.party) + '>' + escapeHtml(fmtParty(c.party)) + '</span>' +
+            '<span class="cand-tag">' + escapeHtml(rankTagText) + '</span>' +
+          '</div>' +
+          '<div>' +
+            '<div class="ls2024-votes">' + fmtNum(c.votes) + '</div>' +
+            '<div class="ls2024-pct">' + fmtPct(c.pct) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="ls2024-bar-track"><div class="ls2024-bar-fill" style="width:' + width + '%; background:' + barColor + '"></div></div>' +
+      '</div>';
+    }).join('');
+ 
+    return '<div class="ls2024-card">' +
+      '<div class="ls2024-head">' +
+        '<div class="ls2024-eyebrow">2024 Lok Sabha election &middot; ' + escapeHtml(zone) + '</div>' +
+        '<div class="ls2024-title">' + escapeHtml(result.label) + '</div>' +
+      '</div>' +
+      '<div class="ls2024-body">' + rowsHtml + '</div>' +
+      '<div class="ls2024-foot">Top 3 finishers shown as published for the 2024 Lok Sabha general election in this constituency. Vote share is calculated against the combined votes of these three candidates only.</div>' +
+    '</div>';
+  }
+ 
+  // ============================================================
+  // Lok-Sabha-level summary: seats won by party within one LS area
+  // ============================================================
+  function renderLsSummary(zone, ls){
+    var rawSeats = (tree[zone] && tree[zone][ls]) ? tree[zone][ls] : [];
+    var seats = sortSeats(rawSeats, seatSortMode);
+ 
+    var partyWins = {};
+    var totalVotesAll = 0;
+    rawSeats.forEach(function(rec){
+      (rec.candidates||[]).forEach(function(c){ totalVotesAll += (c.votes||0); });
+      var winner = (rec.candidates||[]).filter(function(c){ return c.rank === 'Winner'; })[0];
+      if(winner){
+        var p = winner.party || 'Independent / Other';
+        partyWins[p] = (partyWins[p]||0) + 1;
+      }
+    });
+ 
+    var partyRows = Object.keys(partyWins).map(function(p){ return {party:p, seats:partyWins[p]}; })
+      .sort(function(a,b){ return b.seats - a.seats; });
+    var maxSeats = partyRows.length ? partyRows[0].seats : 1;
+ 
+    var barsHtml = partyRows.map(function(row){
+      var width = Math.max(4, Math.round(row.seats / maxSeats * 100));
+      return '<div class="party-bar-row">' +
+        '<div class="pname">' + escapeHtml(fmtParty(row.party)) + '</div>' +
+        '<div class="party-bar-track"><div class="party-bar-fill" style="width:' + width + '%; background: ' + partyBarGradient(row.party) + '"></div></div>' +
+        '<div class="pcount">' + row.seats + ' seat' + (row.seats>1?'s':'') + '</div>' +
+      '</div>';
+    }).join('');
+ 
+    var seatRowsHtml = seats.map(function(rec){
+      var winner = (rec.candidates||[]).filter(function(c){ return c.rank === 'Winner'; })[0];
+      var margin = seatMargin(rec);
+      var marginTxt = margin !== null ? (' &middot; margin ' + fmtNum(margin)) : '';
+      return '<div class="ls-row" data-ac="' + escapeHtml(rec.assembly) + '">' +
+        '<div class="ls-name">' + escapeHtml(rec.assembly) + '</div>' +
+        '<div class="ls-count">' + (winner ? escapeHtml(winner.name) + ' &middot; ' + escapeHtml(fmtParty(winner.party)||'—') + marginTxt : 'No data') + '</div>' +
+      '</div>';
+    }).join('');
+ 
+    var html =
+      '<div class="summary-card" id="lsSummaryCard">' +
+        '<div class="summary-head">' +
+          '<div>' +
+            '<div class="summary-eyebrow">' + escapeHtml(zone) + ' &middot; Lok Sabha report</div>' +
+            '<div class="summary-title">' + escapeHtml(ls) + '</div>' +
+          '</div>' +
+          '<div class="summary-stats">' +
+            '<div class="summary-stat"><div class="v">' + rawSeats.length + '</div><div class="l">Assembly seats</div></div>' +
+            '<div class="summary-stat"><div class="v">' + fmtNum(totalVotesAll) + '</div><div class="l">Votes counted</div></div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="summary-body">' +
+          '<div class="share-title">Seats won by party (2025 assembly result)</div>' +
+          '<div class="party-bars">' + barsHtml + '</div>' +
+          '<div class="summary-subnote">' +
+            '<div class="share-title" style="margin-top:18px;">Assembly seats in this Lok Sabha area — tap to view result</div>' +
+            sortBarHtml(seatSortMode) +
+            '<div class="ls-rows">' + seatRowsHtml + '</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      renderLs2024Card(zone, ls);
+ 
+    return html;
+  }
+ 
+  // ============================================================
+  // Empty / no-data / result rendering
+  // ============================================================
+  function renderEmpty(){
+    emptyState.classList.remove('loading');
+    emptyState.querySelector('h3').textContent = 'No assembly selected yet';
+    emptyState.querySelector('p').textContent = 'Work through the three steps above — zone, then Lok Sabha, then assembly — and the constituency result will appear here. Selecting just a zone or Lok Sabha shows a summary report for that area.';
+    resultsEl.innerHTML = '';
+    resultsEl.appendChild(emptyState);
+  }
+ 
+  function renderNoData(rec){
+    resultsEl.innerHTML =
+      '<div class="ac-card">' +
+        '<div class="ac-head">' +
+          '<div class="ac-head-left">' +
+            '<div class="crumb">' + escapeHtml(rec.zone) + ' &rarr; <b>' + escapeHtml(rec.lokSabha) + '</b></div>' +
+            '<div class="ac-name">' + escapeHtml(rec.assembly) + '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="no-data">' +
+          '<p>Result details for this assembly were not recorded in the source sheet, so there is nothing to display here yet.</p>' +
+        '</div>' +
+      '</div>';
+  }
+ 
+  function renderResult(rec){
+    var cands = rec.candidates || [];
+    if(cands.length === 0){
+      renderNoData(rec);
+      return;
+    }
+ 
+    var winner = cands.filter(function(c){ return c.rank === 'Winner'; })[0] || cands[0];
+    var runnerUp = cands.filter(function(c){ return c.rank === 'Runner-1'; })[0];
+    var maxVotes = Math.max.apply(null, cands.map(function(c){ return c.votes || 0; }));
+ 
+    var marginHtml = '';
+    if(winner.votes && runnerUp && runnerUp.votes){
+      var margin = winner.votes - runnerUp.votes;
+      var marginPct = (winner.pct !== null && runnerUp.pct !== null) ? (winner.pct - runnerUp.pct) : null;
+      marginHtml =
+        '<div class="margin-strip">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>' +
+          '<div class="txt">Won by a margin of <b>' + fmtNum(margin) + ' votes</b>' +
+          (marginPct !== null ? ' &mdash; <b>' + marginPct.toFixed(2) + ' pts</b> ahead of the runner-up on vote share' : '') +
+          '</div>' +
+        '</div>';
+    }
+ 
+    function chip(text, cls, styleAttr){
+      if(!text) return '';
+      return '<span class="chip ' + (cls||'') + '"' + (styleAttr||'') + '>' + escapeHtml(text) + '</span>';
+    }
+ 
+    var runnerUpHtml = '';
+    if(runnerUp){
+      var ruChips = [
+        chip(fmtParty(runnerUp.party), 'party', partyTagStyle(runnerUp.party)),
+        chip(runnerUp.caste)
+      ].join('');
+      runnerUpHtml =
+        '<div class="runnerup-strip">' +
+          '<div class="ru-label">Runner up</div>' +
+          '<div class="ru-main">' +
+            '<span class="ru-name">' + escapeHtml(runnerUp.name || 'Unnamed candidate') + '</span>' +
+            ruChips +
+          '</div>' +
+          '<div class="ru-votes">' + fmtNum(runnerUp.votes) + ' &middot; ' + fmtPct(runnerUp.pct) + '</div>' +
+        '</div>';
+    }
+ 
+    var winnerChips = [
+      chip(fmtParty(winner.party), 'party', partyTagStyle(winner.party)),
+      chip(winner.caste)
+    ].join('');
+ 
+    // Winner band uses the party's official color when we have one on file;
+    // otherwise falls back to the original house green so every seat still
+    // renders consistently.
+    var winnerPartyColor = partyColor(winner.party);
+    var winnerBandStyle = '';
+    var winnerBandClass = 'winner-band';
+    if(winnerPartyColor){
+      var darkText = partyNeedsDarkText(winner.party);
+      winnerBandStyle = ' style="background: linear-gradient(135deg, ' + winnerPartyColor + ' 0%, ' + shadeColor(winnerPartyColor, -28) + ' 100%); color: ' + (darkText ? 'var(--ink)' : 'var(--parchment)') + ';"';
+      winnerBandClass += darkText ? ' on-light' : '';
+    }
+ 
+    var DISPLAY_LIMIT = 5; // winner + up to 4 runners-up
+    var displayedCands = cands.slice(0, DISPLAY_LIMIT);
+    var hiddenCount = cands.length - displayedCands.length;
+
+    // Sort only changes the *order* candidates are listed in below — the
+    // Elected MLA band and runner-up strip above always reflect the actual
+    // declared rank, regardless of the chosen sort.
+    var sortedDisplayCands = sortCandidates(displayedCands, candSortMode, winner.votes);
+
+    var candRowsHtml = sortedDisplayCands.map(function(c){
+      var pctWidth = maxVotes > 0 ? Math.max(2, Math.round((c.votes||0) / maxVotes * 100)) : 2;
+      var isWinner = c.rank === 'Winner';
+      var origIdx = cands.indexOf(c);
+      return (
+        '<div class="cand-row">' +
+          '<div class="cand-rank' + (isWinner?' is-winner':'') + '">' + rankShort(c.rank, origIdx) + '</div>' +
+          '<div class="cand-main">' +
+            '<div class="cand-name-row">' +
+              '<span class="cand-name" title="' + escapeHtml(c.name) + '">' + escapeHtml(c.name || 'Unnamed candidate') + '</span>' +
+              (c.party ? '<span class="cand-tag party"' + partyTagStyle(c.party) + '>' + escapeHtml(fmtParty(c.party)) + '</span>' : '') +
+              (c.caste ? '<span class="cand-tag">' + escapeHtml(c.caste) + '</span>' : '') +
+              '<span class="cand-tag">' + escapeHtml(rankLabel(c.rank)) + '</span>' +
+            '</div>' +
+            '<div class="bar-track"><div class="bar-fill' + (isWinner?' is-winner':'') + '" style="width:' + pctWidth + '%' + (!isWinner && partyColor(c.party) ? ';background:linear-gradient(90deg,' + shadeColor(partyColor(c.party),18) + ',' + partyColor(c.party) + ')' : '') + '"></div></div>' +
+          '</div>' +
+          '<div class="cand-figs">' +
+            '<div class="cand-votes">' + fmtNum(c.votes) + '</div>' +
+            '<div class="cand-pct">' + fmtPct(c.pct) + '</div>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+ 
+    var html =
+      '<div class="ac-card">' +
+        '<div class="ac-head">' +
+          '<div class="ac-head-left">' +
+            '<div class="crumb">' + escapeHtml(rec.zone) + ' &rarr; <b>' + escapeHtml(rec.lokSabha) + '</b> &middot; ' + escapeHtml(rec.district || '') + '</div>' +
+            '<div class="ac-name">' + escapeHtml(rec.assembly) + '</div>' +
+          '</div>' +
+          '<div class="ac-stats">' +
+            '<div class="tv-label">Total votes counted</div>' +
+            '<div class="tv-value">' + fmtNum(rec.totalVotes) + '</div>' +
+          '</div>' +
+        '</div>' +
+ 
+        '<div class="' + winnerBandClass + '"' + winnerBandStyle + '>' +
+          '<div class="winner-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.9H22l-5.8 4.3 2.2 7-6.4-4.6L5.6 20.2l2.2-7L2 9h7.6z"/></svg>Elected MLA</div>' +
+          '<div class="winner-row">' +
+            '<div>' +
+              '<div class="winner-name">' + escapeHtml(winner.name || 'Unnamed candidate') + '</div>' +
+              '<div class="winner-meta">' + winnerChips + '</div>' +
+            '</div>' +
+            '<div class="winner-votes">' +
+              '<div class="num">' + fmtNum(winner.votes) + '</div>' +
+              '<div class="pct">' + fmtPct(winner.pct) + ' of votes cast</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+ 
+        marginHtml +
+        runnerUpHtml +
+ 
+        '<div class="share-section">' +
+          '<div class="share-title">Top result' + (displayedCands.length>1?'s':'') + ' &middot; ' + displayedCands.length + ' of ' + cands.length + ' candidates</div>' +
+          candSortBarHtml(candSortMode) +
+          candRowsHtml +
+        '</div>' +
+ 
+        '<div class="ac-foot">' +
+          '<div class="note">Vote share (%) is each candidate\'s votes divided by the total votes reported for this assembly across all listed candidates.' +
+          (hiddenCount > 0 ? ' ' + hiddenCount + ' more candidate' + (hiddenCount>1?'s':'') + ' contested this seat but are not shown above.' : '') +
+          '</div>' +
+        '</div>' +
+      '</div>' +
+      renderLs2024Card(rec.zone, rec.lokSabha);
+ 
+    resultsEl.innerHTML = html;
+    wireCandSortSelect(rec);
+  }
+ 
+  // ============================================================
+  // Master view renderer — decides what to show based on selection
+  // ============================================================
+  function renderView(){
+    var zone = currentView.zone, ls = currentView.ls, ac = currentView.ac;
+    if(zone && ls && ac){
+      var rec = byAssembly[zone+'|||'+ls+'|||'+ac];
+      if(rec) renderResult(rec); else renderEmpty();
+    } else if(zone && ls){
+      resultsEl.innerHTML = renderLsSummary(zone, ls);
+      wireSummaryClicks();
+      wireSortSelect(zone, ls);
+    } else if(zone){
+      resultsEl.innerHTML = renderZoneSummary(zone);
+      wireSummaryClicks();
+    } else {
+      renderEmpty();
+    }
+  }
+ 
+  function wireSummaryClicks(){
+    var lsRows = resultsEl.querySelectorAll('.ls-row[data-ls]');
+    lsRows.forEach(function(row){
+      row.addEventListener('click', function(){
+        var ls = row.getAttribute('data-ls');
+        lsSelect.value = ls;
+        lsSelect.dispatchEvent(new Event('change'));
+      });
+    });
+    var acRows = resultsEl.querySelectorAll('.ls-row[data-ac]');
+    acRows.forEach(function(row){
+      row.addEventListener('click', function(){
+        var ac = row.getAttribute('data-ac');
+        acSelect.value = ac;
+        acSelect.dispatchEvent(new Event('change'));
+      });
+    });
+  }
+ 
+  // ============================================================
+  // Search — across candidate names, parties, assembly, lok sabha, zone
+  // ============================================================
+  var searchIndex = []; // flat list of searchable items
+  var activeSearchIdx = -1;
+ 
+  function buildSearchIndex(){
+    searchIndex = [];
+    DATA.forEach(function(rec){
+      // place-level entries
+      searchIndex.push({
+        type:'assembly', label: rec.assembly,
+        meta: rec.zone + ' \u2192 ' + rec.lokSabha,
+        zone: rec.zone, ls: rec.lokSabha, ac: rec.assembly,
+        searchText: normName(rec.assembly + ' ' + rec.lokSabha + ' ' + rec.zone + ' ' + (rec.district||''))
+      });
+      (rec.candidates||[]).forEach(function(c){
+        if(!c.name) return;
+        searchIndex.push({
+          type:'candidate', label: c.name,
+          meta: (c.party ? fmtParty(c.party) + ' \u00b7 ' : '') + rec.assembly + ', ' + rec.lokSabha,
+          tag: c.rank === 'Winner' ? 'Won' : null,
+          zone: rec.zone, ls: rec.lokSabha, ac: rec.assembly,
+          searchText: normName(c.name + ' ' + (c.party||'') + ' ' + fmtParty(c.party||'') + ' ' + rec.assembly + ' ' + rec.lokSabha + ' ' + rec.zone)
+        });
+      });
+    });
+    // dedupe assembly entries (one per assembly) — candidates already cover names
+    var seenAc = {};
+    searchIndex = searchIndex.filter(function(item){
+      if(item.type === 'assembly'){
+        var k = item.zone+'|'+item.ls+'|'+item.ac;
+        if(seenAc[k]) return false;
+        seenAc[k] = true;
+      }
+      return true;
+    });
+  }
+ 
+  function runSearch(query){
+    var q = normName(query);
+    if(!q){ searchResultsEl.classList.remove('show'); searchResultsEl.innerHTML=''; return; }
+    var terms = q.split(' ').filter(Boolean);
+    var matches = searchIndex.filter(function(item){
+      return terms.every(function(t){ return item.searchText.indexOf(t) !== -1; });
+    });
+    // rank: exact-ish matches first (label startsWith), then by type (candidate, assembly)
+    matches.sort(function(a,b){
+      var aStarts = normName(a.label).indexOf(q) === 0 ? 0 : 1;
+      var bStarts = normName(b.label).indexOf(q) === 0 ? 0 : 1;
+      if(aStarts !== bStarts) return aStarts - bStarts;
+      return 0;
+    });
+    matches = matches.slice(0, 18);
+    renderSearchResults(matches, q);
+  }
+ 
+  function renderSearchResults(matches, q){
+    activeSearchIdx = -1;
+    if(matches.length === 0){
+      searchResultsEl.innerHTML = '<div class="search-empty">No matches for "' + escapeHtml(q) + '". Try a candidate, party, assembly, Lok Sabha, or zone name.</div>';
+      searchResultsEl.classList.add('show');
+      return;
+    }
+    var html = matches.map(function(item, i){
+      var icon = item.type === 'candidate' ? 'Candidate' : 'Assembly';
+      return '<div class="sr-item" data-idx="' + i + '">' +
+        '<div class="sr-main">' +
+          '<div class="sr-name">' + escapeHtml(item.label) + '</div>' +
+          '<div class="sr-meta">' + escapeHtml(item.meta) + '</div>' +
+        '</div>' +
+        '<div class="sr-tag' + (item.tag ? ' won' : '') + '">' + (item.tag || icon) + '</div>' +
+      '</div>';
+    }).join('');
+    searchResultsEl.innerHTML = html;
+    searchResultsEl.classList.add('show');
+ 
+    var items = searchResultsEl.querySelectorAll('.sr-item');
+    items.forEach(function(el, i){
+      el.addEventListener('click', function(){ selectSearchMatch(matches[i]); });
+    });
+    searchResultsEl._currentMatches = matches;
+  }
+ 
+  function selectSearchMatch(item){
+    zoneSelect.value = item.zone;
+    zoneSelect.dispatchEvent(new Event('change'));
+    // populateLokSabha was triggered synchronously by the change handler above
+    lsSelect.value = item.ls;
+    lsSelect.dispatchEvent(new Event('change'));
+    acSelect.value = item.ac;
+    acSelect.dispatchEvent(new Event('change'));
+ 
+    searchInput.value = item.label;
+    searchResultsEl.classList.remove('show');
+    searchClear.classList.add('show');
+    resultsEl.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+ 
+  searchInput.addEventListener('input', function(){
+    searchClear.classList.toggle('show', !!searchInput.value);
+    runSearch(searchInput.value);
+  });
+  searchInput.addEventListener('focus', function(){
+    if(searchInput.value) runSearch(searchInput.value);
+  });
+  searchInput.addEventListener('keydown', function(e){
+    var items = searchResultsEl.querySelectorAll('.sr-item');
+    if(!items.length) return;
+    if(e.key === 'ArrowDown'){
+      e.preventDefault();
+      activeSearchIdx = Math.min(activeSearchIdx+1, items.length-1);
+      items.forEach(function(el,i){ el.classList.toggle('active', i===activeSearchIdx); });
+      items[activeSearchIdx].scrollIntoView({block:'nearest'});
+    } else if(e.key === 'ArrowUp'){
+      e.preventDefault();
+      activeSearchIdx = Math.max(activeSearchIdx-1, 0);
+      items.forEach(function(el,i){ el.classList.toggle('active', i===activeSearchIdx); });
+      items[activeSearchIdx].scrollIntoView({block:'nearest'});
+    } else if(e.key === 'Enter'){
+      if(activeSearchIdx >= 0 && searchResultsEl._currentMatches){
+        selectSearchMatch(searchResultsEl._currentMatches[activeSearchIdx]);
+      }
+    } else if(e.key === 'Escape'){
+      searchResultsEl.classList.remove('show');
+      searchInput.blur();
+    }
+  });
+  searchClear.addEventListener('click', function(){
+    searchInput.value = '';
+    searchClear.classList.remove('show');
+    searchResultsEl.classList.remove('show');
+    searchResultsEl.innerHTML = '';
+    searchInput.focus();
+  });
+  document.addEventListener('click', function(e){
+    if(!e.target.closest('.search-wrap')){
+      searchResultsEl.classList.remove('show');
+    }
+  });
+ 
+  // ============================================================
+  // Dropdown event wiring
+  // ============================================================
+  zoneSelect.addEventListener('change', function(){
+    var zone = zoneSelect.value;
+    currentView = { zone: zone, ls: '', ac: '' };
+    populateLokSabha(zone);
+    clearSelect(acSelect, 'Select Lok Sabha first…');
+    acSelect.disabled = true;
+    stepAc.classList.add('disabled');
+    renderView();
+  });
+ 
+  lsSelect.addEventListener('change', function(){
+    var zone = zoneSelect.value;
+    var ls = lsSelect.value;
+    currentView = { zone: zone, ls: ls, ac: '' };
+    seatSortMode = 'name';
+    populateAssemblies(zone, ls);
+    renderView();
+  });
+ 
+  acSelect.addEventListener('change', function(){
+    var zone = zoneSelect.value;
+    var ls = lsSelect.value;
+    var ac = acSelect.value;
+    currentView = { zone: zone, ls: ls, ac: ac };
+    candSortMode = 'rank';
+    renderView();
+  });
+ 
+  // ============================================================
+  // Init
+  // ============================================================
+  function init(){
+    setStatus('loading', 'Loading live results from Google Sheets…');
+    emptyState.classList.add('loading');
+    emptyState.querySelector('h3').textContent = 'Fetching live results…';
+    emptyState.querySelector('p').textContent = 'Pulling the latest data from the published Google Sheet. This only takes a moment.';
+    resultsEl.innerHTML = '';
+    resultsEl.appendChild(emptyState);
+ 
+    loadLiveData().then(function(){
+      buildIndices();
+      buildSearchIndex();
+      populateZones();
+      populateLokSabha('');
+      populateAssemblies('', '');
+      currentView = { zone:'', ls:'', ac:'' };
+      renderView();
+    }).catch(function(err){
+      console.error('Live data load failed:', err);
+      setStatus('err', 'Could not load live data (' + (err && err.message ? err.message : 'fetch failed') + ').');
+      liveEyebrow.classList.remove('live');
+      emptyState.classList.remove('loading');
+      emptyState.querySelector('h3').textContent = 'Live data unavailable';
+      emptyState.querySelector('p').textContent = 'The dashboard could not reach the published Google Sheet. Check your connection or that the sheet is still published to the web, then retry.';
+      seatCount.textContent = '0 seats indexed';
+    });
+  }
+ 
+  init();
+ 
+})();
+</script>
+</body>
+</html>
