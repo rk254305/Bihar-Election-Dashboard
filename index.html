@@ -1154,6 +1154,46 @@
     margin: 52px auto 0;
     padding: 0 20px;
   }
+  /* active filter banner */
+  .ls24-filter-banner{
+    display:none;
+    align-items:center;
+    gap:10px;
+    background: rgba(217,125,61,0.12);
+    border: 1px solid rgba(217,125,61,0.35);
+    border-radius:10px;
+    padding:10px 16px;
+    margin-bottom:14px;
+  }
+  .ls24-filter-banner.active{ display:flex; }
+  .ls24-filter-banner-text{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    font-weight:600;
+    color: var(--saffron-dim);
+    letter-spacing:0.04em;
+    flex:1;
+  }
+  .ls24-filter-banner-text strong{ color: var(--parchment); }
+  .ls24-filter-clear{
+    background:none;
+    border:1.5px solid rgba(217,125,61,0.4);
+    border-radius:20px;
+    padding:4px 12px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    font-weight:700;
+    color: var(--saffron-dim);
+    cursor:pointer;
+    letter-spacing:0.04em;
+    transition: border-color .12s, background .12s, color .12s;
+    white-space:nowrap;
+  }
+  .ls24-filter-clear:hover{
+    border-color: var(--saffron);
+    background: rgba(217,125,61,0.15);
+    color: var(--parchment);
+  }
   .ls24-header{ margin-bottom:20px; }
   .ls24-header h2{
     font-family:'Fraunces',serif;
@@ -1401,6 +1441,11 @@
     <div class="ls24-header">
       <h2>General Election 2024, <em>all 40 Bihar seats</em></h2>
       <p>Winners, runners-up and victory margins for every Bihar Lok Sabha constituency from the 2024 General Election. Search by constituency, candidate, or party.</p>
+    </div>
+
+    <div class="ls24-filter-banner" id="ls24FilterBanner">
+      <span class="ls24-filter-banner-text" id="ls24FilterBannerText">Showing results for <strong id="ls24FilterName"></strong></span>
+      <button class="ls24-filter-clear" id="ls24FilterClear">&times; Clear filter</button>
     </div>
 
     <div class="ls24-search-wrap">
@@ -2538,6 +2583,10 @@ License: MIT
     currentView = { zone: zone, ls: ls, ac: '' };
     populateAssemblies(zone, ls);
     renderView();
+    // Sync Lok Sabha 2024 section filter
+    if(typeof window.ls24FilterByLs === 'function'){
+      window.ls24FilterByLs(ls);
+    }
   });
  
   acSelect.addEventListener('change', function(){
@@ -3008,9 +3057,51 @@ License: MIT
     return '#'+(0x1000000+r*0x10000+g*0x100+b).toString(16).slice(1);
   }
 
-  // Search wiring
+  // Filter banner wiring
+  var ls24Banner     = document.getElementById('ls24FilterBanner');
+  var ls24FilterName = document.getElementById('ls24FilterName');
+  var ls24FilterClear = document.getElementById('ls24FilterClear');
+  var ls24ActiveLs   = '';  // tracks the current LS-driven filter name
+
+  function setLs24Banner(name){
+    ls24ActiveLs = name;
+    if(name){
+      ls24FilterName.textContent = name;
+      ls24Banner.classList.add('active');
+    } else {
+      ls24ActiveLs = '';
+      ls24Banner.classList.remove('active');
+    }
+  }
+
+  // Clear button resets both the banner and the search box
+  ls24FilterClear.addEventListener('click', function(){
+    setLs24Banner('');
+    ls24Q = '';
+    ls24Search.value = '';
+    renderLs24Grid();
+    // Also reset the main dropdowns if desired — just clear the LS24 filter here
+  });
+
+  // Expose global hook so main lsSelect change can call this
+  window.ls24FilterByLs = function(lsName){
+    var name = (lsName || '').trim();
+    ls24Q = name;
+    ls24Search.value = name;
+    setLs24Banner(name);
+    renderLs24Grid();
+    if(name){
+      // Smooth scroll into view after a short delay so render completes first
+      setTimeout(function(){
+        document.getElementById('ls24Section').scrollIntoView({ behavior:'smooth', block:'start' });
+      }, 120);
+    }
+  };
+
+  // Search wiring — manual typing clears the banner
   ls24Search.addEventListener('input', function(){
     ls24Q = ls24Search.value;
+    if(!ls24Search.value) setLs24Banner('');
     renderLs24Grid();
   });
 
