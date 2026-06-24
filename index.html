@@ -512,29 +512,6 @@
     color: var(--ink-faint2);
   }
  
-  /* ---------- sort bar ---------- */
-  .sort-bar{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    flex-wrap:wrap;
-    margin-top:18px;
-  }
-  .sort-bar .sort-label{
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;
-    letter-spacing:0.08em;
-    text-transform:uppercase;
-    color: var(--ink-faint2);
-    flex-shrink:0;
-  }
-  .sort-bar select{
-    width:auto;
-    padding: 7px 30px 7px 12px;
-    font-size:12.5px;
-    border-radius:8px;
-  }
- 
   /* ---------- results ---------- */
   #results{ margin-top:18px; }
  
@@ -843,88 +820,6 @@
   }
   .no-data p{ color: var(--ink-faint); font-size:13.5px; }
  
-  /* ---------- LS 2024 result card ---------- */
-  .ls2024-card{
-    margin-top:18px;
-    background: var(--paper);
-    border-radius:18px;
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(255,255,255,0.06);
-    overflow:hidden;
-    animation: rise .35s ease both;
-  }
-  .ls2024-head{
-    padding: 18px 26px 14px;
-    border-bottom: 1px solid var(--line-soft);
-  }
-  .ls2024-eyebrow{
-    font-family:'JetBrains Mono',monospace;
-    font-size:10px;
-    letter-spacing:0.1em;
-    text-transform:uppercase;
-    color: var(--bronze);
-    margin-bottom:6px;
-  }
-  .ls2024-title{
-    font-family:'Fraunces',serif;
-    font-weight:600;
-    font-size:20px;
-    color: var(--ink);
-  }
-  .ls2024-body{ padding: 18px 26px 22px; display:flex; flex-direction:column; gap:14px; }
-  .ls2024-row{ display:flex; flex-direction:column; gap:6px; }
-  .ls2024-row-top{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    flex-wrap:wrap;
-  }
-  .ls2024-name{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    flex-wrap:wrap;
-    font-size:14px;
-    font-weight:700;
-    color: var(--ink);
-  }
-  .ls2024-votes{
-    font-family:'JetBrains Mono',monospace;
-    font-size:13px;
-    font-weight:700;
-    color: var(--ink);
-    text-align:right;
-  }
-  .ls2024-pct{
-    font-family:'JetBrains Mono',monospace;
-    font-size:10.5px;
-    color: var(--ink-faint2);
-    text-align:right;
-  }
-  .ls2024-bar-track{
-    height:9px;
-    background: var(--parchment-dim);
-    border-radius:5px;
-    overflow:hidden;
-  }
-  .ls2024-bar-fill{
-    height:100%;
-    border-radius:5px;
-  }
-  .ls2024-foot{
-    padding: 0 26px 20px;
-    font-size:11.5px;
-    color: var(--ink-faint2);
-    line-height:1.6;
-  }
-  .ls2024-unavailable{
-    padding: 28px 26px;
-    text-align:center;
-    color: var(--ink-faint);
-    font-size:13px;
-  }
- 
   footer{
     text-align:center;
     color: rgba(247,243,234,0.35);
@@ -940,6 +835,317 @@
     .ac-card{ animation:none; }
     .bar-fill{ transition:none; }
     .status-pill .ring{ animation:none; }
+  }
+
+  /* ========== HISTORICAL RESULTS SECTION ========== */
+  .hist-section{
+    max-width: 980px;
+    margin: 48px auto 0;
+    padding: 0 20px;
+  }
+  .hist-divider{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    margin-bottom:28px;
+  }
+  .hist-divider-line{
+    flex:1;
+    height:1px;
+    background: rgba(255,255,255,0.10);
+  }
+  .hist-divider-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color: var(--saffron-dim);
+    white-space:nowrap;
+  }
+  .hist-header{
+    margin-bottom:20px;
+  }
+  .hist-header h2{
+    font-family:'Fraunces',serif;
+    font-size: clamp(22px,3.5vw,34px);
+    font-weight:600;
+    color: var(--parchment);
+    margin:0 0 6px;
+    line-height:1.1;
+  }
+  .hist-header h2 em{
+    font-style:italic;
+    font-weight:500;
+    color: var(--saffron-dim);
+  }
+  .hist-header p{
+    font-size:13.5px;
+    color: rgba(247,243,234,0.55);
+    margin:0;
+    max-width:560px;
+  }
+  /* year filter pills */
+  .hist-controls{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:18px;
+  }
+  .hist-controls-label{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: rgba(247,243,234,0.45);
+    margin-right:4px;
+  }
+  .year-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding:7px 16px;
+    border-radius:20px;
+    border:1.5px solid rgba(255,255,255,0.14);
+    background: rgba(255,255,255,0.06);
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:600;
+    color: rgba(247,243,234,0.65);
+    cursor:pointer;
+    transition: background .15s, border-color .15s, color .15s;
+    letter-spacing:0.04em;
+  }
+  .year-pill:hover{
+    background: rgba(255,255,255,0.12);
+    border-color: var(--saffron-dim);
+    color: var(--parchment);
+  }
+  .year-pill.active{
+    background: var(--saffron);
+    border-color: var(--saffron);
+    color: #fff;
+  }
+  .year-pill .pill-count{
+    background: rgba(0,0,0,0.18);
+    border-radius:10px;
+    font-size:10px;
+    padding:1px 6px;
+    min-width:22px;
+    text-align:center;
+  }
+  .year-pill.active .pill-count{ background: rgba(0,0,0,0.22); }
+  /* hist search */
+  .hist-search-wrap{
+    background: var(--paper);
+    border-radius:14px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 5px;
+    margin-bottom:14px;
+  }
+  .hist-search-inner{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding: 9px 14px;
+  }
+  .hist-search-inner svg{ flex-shrink:0; color: var(--ink-faint2); }
+  #histSearch{
+    flex:1;
+    border:none;
+    outline:none;
+    background:transparent;
+    font-family:'Inter',sans-serif;
+    font-size:14px;
+    font-weight:500;
+    color: var(--ink);
+    min-width:0;
+  }
+  #histSearch::placeholder{ color: var(--ink-faint2); font-weight:400; }
+  /* hist stats row */
+  .hist-stats{
+    display:flex;
+    gap:18px;
+    flex-wrap:wrap;
+    margin-bottom:16px;
+  }
+  .hist-stat{
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.09);
+    border-radius:10px;
+    padding:10px 16px;
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .hist-stat .hv{
+    font-family:'Fraunces',serif;
+    font-size:20px;
+    font-weight:600;
+    color: var(--parchment);
+    line-height:1.1;
+  }
+  .hist-stat .hl{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.06em;
+    text-transform:uppercase;
+    color: rgba(247,243,234,0.45);
+  }
+  /* hist grid */
+  .hist-grid-wrap{
+    background: var(--paper);
+    border-radius:18px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.06);
+    overflow:hidden;
+    animation: rise .35s ease both;
+  }
+  .hist-grid-head{
+    display:grid;
+    grid-template-columns: 56px 1fr 120px 100px 100px 90px;
+    gap:0;
+    padding: 10px 22px;
+    background: var(--parchment-dim);
+    border-bottom:1px solid var(--line);
+  }
+  @media (max-width:700px){
+    .hist-grid-head{ grid-template-columns: 52px 1fr 100px 80px; }
+    .hist-grid-head .hgh-runner,
+    .hist-grid-head .hgh-runner-votes{ display:none; }
+  }
+  .hist-grid-head .hgh{
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.1em;
+    text-transform:uppercase;
+    color: var(--ink-faint2);
+    font-weight:600;
+    padding:3px 0;
+  }
+  .hist-row{
+    display:grid;
+    grid-template-columns: 56px 1fr 120px 100px 100px 90px;
+    gap:0;
+    padding: 13px 22px;
+    border-bottom: 1px solid var(--line-soft);
+    align-items:center;
+    transition: background .12s ease;
+  }
+  .hist-row:last-child{ border-bottom:none; }
+  .hist-row:hover{ background: var(--parchment); }
+  @media (max-width:700px){
+    .hist-row{ grid-template-columns: 52px 1fr 100px 80px; }
+    .hist-row .hr-runner,
+    .hist-row .hr-runner-votes{ display:none; }
+  }
+  .hist-row .hr-year{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px;
+    font-weight:700;
+    color: var(--saffron);
+  }
+  .hist-row .hr-const{
+    font-size:13px;
+    font-weight:600;
+    color: var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding-right:10px;
+  }
+  .hist-winner-cell{
+    display:flex;
+    flex-direction:column;
+    gap:4px;
+    min-width:0;
+  }
+  .hist-winner-name{
+    font-size:12.5px;
+    font-weight:600;
+    color: var(--ink);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .hist-party-chip{
+    display:inline-flex;
+    align-items:center;
+    padding:2px 7px;
+    border-radius:5px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    font-weight:700;
+    background: var(--ink);
+    color: var(--parchment);
+    width:fit-content;
+    max-width:110px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .hist-row .hr-winner-votes{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;
+    font-weight:700;
+    color: var(--ink);
+  }
+  .hist-row .hr-runner{
+    font-size:12px;
+    color: var(--ink-faint);
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding-right:8px;
+  }
+  .hist-row .hr-runner-votes{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px;
+    color: var(--ink-faint2);
+  }
+  .hist-row .hr-margin{
+    text-align:right;
+  }
+  .hist-margin-badge{
+    display:inline-block;
+    padding:3px 8px;
+    border-radius:6px;
+    background: var(--parchment-dim);
+    font-family:'JetBrains Mono',monospace;
+    font-size:10.5px;
+    font-weight:600;
+    color: var(--brick);
+    white-space:nowrap;
+  }
+  .hist-empty{
+    padding:48px 24px;
+    text-align:center;
+  }
+  .hist-empty p{ font-size:13.5px; color: var(--ink-faint); margin:0; }
+  .hist-load-more{
+    display:flex;
+    justify-content:center;
+    padding:18px;
+    border-top:1px solid var(--line-soft);
+  }
+  .hist-load-more button{
+    background:none;
+    border:1.5px solid var(--line);
+    border-radius:20px;
+    padding:9px 22px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:11.5px;
+    font-weight:600;
+    color: var(--ink-soft);
+    cursor:pointer;
+    transition: border-color .15s, background .15s;
+    letter-spacing:0.04em;
+  }
+  .hist-load-more button:hover{
+    border-color: var(--saffron);
+    background: rgba(217,125,61,0.06);
+    color: var(--saffron);
   }
 </style>
 </head>
@@ -1006,7 +1212,41 @@
       </div>
     </div>
   </div>
- 
+
+  <!-- ========== HISTORICAL RESULTS SECTION ========== -->
+  <div class="hist-section" id="histSection">
+
+    <div class="hist-divider">
+      <div class="hist-divider-line"></div>
+      <div class="hist-divider-label">Historical Archive</div>
+      <div class="hist-divider-line"></div>
+    </div>
+
+    <div class="hist-header">
+      <h2>Bihar elections, <em>across every year</em></h2>
+      <p>Winners and runners-up for every constituency across the 2005 (both phases), 2010, 2015 and 2020 Vidhan Sabha elections. Filter by year or search any name, party or place.</p>
+    </div>
+
+    <div class="hist-controls">
+      <span class="hist-controls-label">Filter year</span>
+      <div id="yearPills"></div>
+    </div>
+
+    <div class="hist-search-wrap">
+      <div class="hist-search-inner">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="histSearch" placeholder="Search constituency, winner name, party…" autocomplete="off">
+      </div>
+    </div>
+
+    <div class="hist-stats" id="histStats"></div>
+
+    <div class="hist-grid-wrap" id="histGrid">
+      <div class="hist-empty"><p>Loading historical data…</p></div>
+    </div>
+
+  </div>
+
   <footer>DATA SOURCED LIVE FROM GOOGLE SHEETS &middot; AC RESULT + BIHAR GEO DATA TABS &middot; VOTE SHARE AS REPORTED PER ASSEMBLY</footer>
 </div>
  
@@ -1058,7 +1298,6 @@ License: MIT
   var tree = {};          // zone -> lokSabha -> [records]
   var byAssembly = {};    // "zone|||ls|||assembly" -> record
   var currentView = { zone:'', ls:'', ac:'' };
-  var seatSortMode = 'name'; // current sort applied to the assembly-seats list inside an LS summary
  
   // ============================================================
   // Helpers — string normalization
@@ -1094,19 +1333,6 @@ License: MIT
     return key;
   }
  
-  // alias table for Lok Sabha name spelling drift between Bihar Geo Data's
-  // "Lok Sabha" column and the hardcoded 2024 Lok Sabha result list below
-  var LOKSABHA_ALIASES = {
-    'purnea': 'purnia',
-    'jhanjharpur': 'jhanjharpur',
-    'valmiki nagar': 'valmiki nagar'
-  };
-  function resolveLsKey(lsName){
-    var key = normName(lsName);
-    if(LOKSABHA_ALIASES[key]) return LOKSABHA_ALIASES[key];
-    return key;
-  }
- 
   function fmtNum(n){
     if(n === null || n === undefined || isNaN(n)) return '—';
     return Number(n).toLocaleString('en-IN');
@@ -1124,18 +1350,11 @@ License: MIT
     'cpi(m)': 'CPI(M)',
     'cpi(ml) (l)': 'CPI(ML) Liberation',
     'ljp (rv)': 'LJP (Ram Vilas)',
-    'ljprv': 'LJP (Ram Vilas)',
     'hams': 'HAM(S)',
-    'ham': 'HAM(S)',
     'vip_2': 'VIP',
     'aimeiem': 'AIMIM',
     'mimm': 'AIMIM',
-    'ind': 'Independent',
-    'cpim': 'CPI(M)',
-    'cpiml': 'CPI(ML) Liberation',
-    'asp-kr': 'ASP (Kanshi Ram)',
-    'rlm': 'RLM',
-    'vsip': 'VSIP'
+    'ind': 'Independent'
   };
   function fmtParty(party){
     if(!party) return party;
@@ -1160,18 +1379,13 @@ License: MIT
     'cpi(m)': '#B71C1C',
     'cpi(ml) (l)': '#E53935',
     'cpi(ml) liberation': '#E53935',
-    'cpim': '#B71C1C',
-    'cpiml': '#E53935',
     'ljp (rv)': '#1976D2',
     'ljp (ram vilas)': '#1976D2',
-    'ljprv': '#1976D2',
     'rljp': '#0D47A1',
     'hams': '#795548',
     'ham(s)': '#795548',
-    'ham': '#795548',
     'vip_2': '#8E24AA',
     'vip': '#8E24AA',
-    'vsip': '#5E35B1',
     'aimeiem': '#00695C',
     'mimm': '#00695C',
     'aimim': '#00695C',
@@ -1179,16 +1393,12 @@ License: MIT
     'aap': '#1E88E5',
     'jsp_5': '#FFDC01',
     'jsp_6': '#FFDC01',
-    'jsp': '#FFDC01',
-    'asp-kr': '#6D4C41',
-    'asp(kr)': '#6D4C41',
-    'rlm': '#00838F',
     'ind': '#9E9E9E',
     'independent': '#9E9E9E'
   };
   // Colors that need dark text for readability (the lighter/brighter ones)
   var PARTY_COLORS_NEEDS_DARK_TEXT = {
-    'jsp_5': 1, 'jsp_6': 1, 'jsp': 1
+    'jsp_5': 1, 'jsp_6': 1
   };
   function partyColor(party){
     if(!party) return null;
@@ -1239,81 +1449,6 @@ License: MIT
   function rankShort(rank, idx){
     if(rank === 'Winner') return 'W';
     return '#' + (idx+1);
-  }
-
-  // ============================================================
-  // Hardcoded Lok Sabha (2024) results — gid=1701375308
-  // Top 3 finishers per Lok Sabha seat, as published. Keyed by the
-  // normalized Lok Sabha name (via resolveLsKey) so it lines up with the
-  // Lok Sabha names coming from the Bihar Geo Data tab regardless of
-  // which assembly the user is browsing.
-  // ============================================================
-  var LS_2024_RAW = [
-    ['Valmiki Nagar', ['Sunil Kumar','JDU',523422], ['Deepak Yadav','RJD',424747], ['Shaifi Mohammad Miya','ASP-KR',13432]],
-    ['Paschim Champaran', ['Dr. Sanjay Jaiswal','BJP',580421], ['Madan Mohan Tiwari','INC',443953], ['Dilip Verma','IND',19451]],
-    ['Purvi Champaran', ['Radha Mohan Singh','BJP',542193], ['Dr. Rajesh Kumar','VIP',453865], ['Umesh Shah','BSP',17914]],
-    ['Sheohar', ['Lovely Anand','JDU',476612], ['Ritu Jaiswal','RJD',447469], ['Yogendra Ram','IND',15106]],
-    ['Sitamarhi', ['Devesh Chandra Thakur','JDU',515719], ['Arjun Rai','RJD',464463], ['Ramesh Kumar Mehto','IND',15861]],
-    ['Madhubani', ['Ashok Kumar Yadav','BJP',553428], ['Ali Ashraf Fatmi','RJD',401483], ['Dharmendra Kumar','IND',22031]],
-    ['Jhanjharpur', ['Ramprit Mandal','JDU',533032], ['Suman Kumar Mahaseth','VIP',348863], ['Gulab Yadav','BSP',191154]],
-    ['Supaul', ['Dileshwar Kamait','JDU',595038], ['Chandrahas Chaupal','RJD',425235], ['Narendra Kumar','IND',21348]],
-    ['Araria', ['Pradeep Kumar Singh','BJP',600146], ['M. Shahnawaz Alam','RJD',580052], ['Shatrughan Pd Suman','IND',23204]],
-    ['Kishanganj', ['Mohammad Jawed','INC',402850], ['Mujahid Alam','JDU',343158], ['Akhtarul Iman','AIMIM',309264]],
-    ['Katihar', ['Tariq Anwar','INC',567092], ['Dulal Chandra Goswami','JDU',517229], ['Gopal Pd. Mahto','IND',16984]],
-    ['Purnia', ['Rajesh Ranjan @ Pappu Yadav','IND',567556], ['Santosh Kushwaha','JDU',543709], ['Bima Bharti','RJD',27120]],
-    ['Madhepura', ['Dinesh Chandra Yadav','JDU',640649], ['Kumar Chandradeep','RJD',466115], ['Mohan Sah','IND',15313]],
-    ['Darbhanga', ['Gopal Jee Thakur','BJP',566630], ['Lalit Kumar Yadav','RJD',388474], ['Ram Narayan Mahato','IND',14249]],
-    ['Muzaffarpur', ['Raj Bhushan Nishad','BJP',619749], ['Ajay Nishad','INC',384822], ['Ritesh Kumar','BSP',15224]],
-    ['Vaishali', ['Veena Devi','LJPRV',567043], ['Vijay Kumar Shukla','RJD',477373], ['S.M. Jha','IND',22810]],
-    ['Gopalganj (SC)', ['Alok Kumar Suman','JDU',518445], ['Prem Nath Chanchal','VIP',249265], ['Dinanath Majhi','BSP',40432]],
-    ['Siwan', ['Vijay Lakshmi Devi','JDU',386508], ['Hena Shahab','IND',293651], ['Awadh Bihari Choudhary','RJD',198823]],
-    ['Maharajganj', ['Janardan Singh Sigriwal','BJP',529533], ['Akash Prasad Singh','INC',426882], ['Madhu Singh','BSP',14082]],
-    ['Saran', ['Rajiv Pratap Rudy','BJP',471752], ['Rohini Acharya','RJD',458091], ['Dhananjay Pd. Singh','IND',15108]],
-    ['Hajipur (SC)', ['Chirag Paswan','LJPRV',615718], ['Shiv Chandra Ram','RJD',445613], ['Savitri Devi','BSP',10250]],
-    ['Ujiarpur', ['Nityanand Rai','BJP',515965], ['Alok Kumar Mehta','RJD',455863], ['Vinay Kumar','BSP',13296]],
-    ['Samastipur (SC)', ['Shambhavi Choudhary','LJPRV',579786], ['Sunny Hazari','INC',392535], ['Arvind Kumar Sahani','IND',22234]],
-    ['Begusarai', ['Giriraj Singh','BJP',649331], ['Abdhus Samad','CPI',567851], ['Ravindra Kumar','IND',13858]],
-    ['Khagaria', ['Rajesh Verma','LJPRV',537862], ['Sanjay Kumar','CPIM',376731], ['Devkant Roy','IND',25274]],
-    ['Bhagalpur', ['Ajay Kumar Mandal','JDU',536031], ['Ajeet Sharma','INC',431163], ['Ranjeet Kumar','IND',17921]],
-    ['Banka', ['Giridhari Yadav','JDU',476677], ['Jai Prakash N. Yadav','RJD',372833], ['Sitaram Yadav','BSP',20563]],
-    ['Munger', ['Rajiv Ranjan Singh','JDU',551767], ['Kumari Anita','RJD',470897], ['Md. Kamran','IND',10751]],
-    ['Nalanda', ['Kaushalendra Kumar','JDU',521988], ['Sandeep Saurav','CPIML',352874], ['Mohammad Imran','BSP',13832]],
-    ['Patna Sahib', ['Ravi Shankar Prasad','BJP',588270], ['Anshul Avijit','INC',434424], ['Lallan Kumar','IND',11215]],
-    ['Pataliputra', ['Misa Bharti','RJD',613283], ['Ram Kripal Yadav','BJP',528109], ['Raju Kumar','IND',12479]],
-    ['Arrah', ['Sudama Prasad','CPIML',529382], ['R. K. Singh','BJP',469574], ['Sree Kumar Singh','IND',13313]],
-    ['Buxar', ['Sudhakar Singh','RJD',438345], ['Mithilesh Tiwari','BJP',408254], ['Anand Mishra','IND',95033]],
-    ['Sasaram (SC)', ['Manoj Kumar','INC',433767], ['Shivesh Ram','BJP',414610], ['Sushil Bhagat','BSP',30223]],
-    ['Karakat', ['Raja Ram Singh','CPIML',380581], ['Pawan Singh','IND',274723], ['Upendra Kushwaha','RLM',253876]],
-    ['Jehanabad', ['Surendra Prasad Yadav','RJD',443035], ['Chandeshwar Prasad','JDU',300444], ['Arun Kumar','IND',181960]],
-    ['Aurangabad', ['Abhay Kushwaha','RJD',465567], ['Sushil Kumar Singh','BJP',386456], ['Suresh Singh','BSP',12319]],
-    ['Gaya (SC)', ['Jitan Ram Manjhi','HAM',494960], ['Kumar Sarvjeet','RJD',393148], ['Sushila Devi','BSP',14756]],
-    ['Nawada', ['Vivek Thakur','BJP',410506], ['Shravan Kumar','RJD',342836], ['Gunjan Kumar','IND',61544]],
-    ['Jamui (SC)', ['Arun Bharti','LJPRV',509047], ['Archana Ravidas','RJD',396565], ['Sakaldeo Das','BSP',25622]]
-  ];
-
-  var LS_2024_RESULTS = {}; // normalized lok sabha name -> {assemblyLabel, candidates:[{name,party,votes,rank}]}
-  (function buildLs2024(){
-    LS_2024_RAW.forEach(function(row){
-      var label = row[0];
-      var entries = row.slice(1);
-      var totalVotes = entries.reduce(function(s,e){ return s + e[2]; }, 0);
-      var candidates = entries.map(function(e, idx){
-        return {
-          name: e[0],
-          party: e[1],
-          votes: e[2],
-          pct: totalVotes ? (e[2] / totalVotes * 100) : null,
-          rank: idx === 0 ? 'Winner' : (idx === 1 ? 'Runner-1' : 'Runner-2')
-        };
-      });
-      var key = resolveLsKey(label);
-      LS_2024_RESULTS[key] = { label: label, totalTop3Votes: totalVotes, candidates: candidates };
-    });
-  })();
-
-  function getLs2024Result(lsName){
-    var key = resolveLsKey(lsName);
-    return LS_2024_RESULTS[key] || null;
   }
  
   // ============================================================
@@ -1710,141 +1845,6 @@ License: MIT
   }
  
   // ============================================================
-  // Seat-level margin helper + sort
-  // ============================================================
-  function seatMargin(rec){
-    var cands = rec.candidates || [];
-    var winner = cands.filter(function(c){ return c.rank === 'Winner'; })[0];
-    var runnerUp = cands.filter(function(c){ return c.rank === 'Runner-1'; })[0];
-    if(!winner || !runnerUp || winner.votes == null || runnerUp.votes == null) return null;
-    return winner.votes - runnerUp.votes;
-  }
-  function seatTotalVotes(rec){
-    return (rec.candidates||[]).reduce(function(s,c){ return s + (c.votes||0); }, 0);
-  }
-  function seatWinner(rec){
-    return (rec.candidates||[]).filter(function(c){ return c.rank === 'Winner'; })[0] || null;
-  }
-  var SORT_OPTIONS = [
-    { value:'name', label:'Assembly name (A–Z)' },
-    { value:'margin_high', label:'Highest margin first' },
-    { value:'margin_low', label:'Lowest margin first (closest contests)' },
-    { value:'votes_high', label:'Highest total votes' },
-    { value:'votes_low', label:'Lowest total votes' },
-    { value:'party', label:'Winning party (A–Z)' }
-  ];
-  function sortSeats(seats, mode){
-    var arr = seats.slice();
-    switch(mode){
-      case 'margin_high':
-        return arr.sort(function(a,b){
-          var ma = seatMargin(a), mb = seatMargin(b);
-          if(ma===null) return 1; if(mb===null) return -1;
-          return mb - ma;
-        });
-      case 'margin_low':
-        return arr.sort(function(a,b){
-          var ma = seatMargin(a), mb = seatMargin(b);
-          if(ma===null) return 1; if(mb===null) return -1;
-          return ma - mb;
-        });
-      case 'votes_high':
-        return arr.sort(function(a,b){ return seatTotalVotes(b) - seatTotalVotes(a); });
-      case 'votes_low':
-        return arr.sort(function(a,b){ return seatTotalVotes(a) - seatTotalVotes(b); });
-      case 'party':
-        return arr.sort(function(a,b){
-          var wa = seatWinner(a), wb = seatWinner(b);
-          var pa = wa ? fmtParty(wa.party)||'' : '';
-          var pb = wb ? fmtParty(wb.party)||'' : '';
-          return pa.localeCompare(pb);
-        });
-      case 'name':
-      default:
-        return arr.sort(function(a,b){ return a.assembly.localeCompare(b.assembly); });
-    }
-  }
-  function sortBarHtml(currentMode){
-    var opts = SORT_OPTIONS.map(function(o){
-      return '<option value="' + o.value + '"' + (o.value===currentMode?' selected':'') + '>' + escapeHtml(o.label) + '</option>';
-    }).join('');
-    return '<div class="sort-bar"><span class="sort-label">Sort seats by</span><select id="seatSortSelect">' + opts + '</select></div>';
-  }
-  function wireSortSelect(zone, ls){
-    var sel = document.getElementById('seatSortSelect');
-    if(!sel) return;
-    sel.addEventListener('change', function(){
-      seatSortMode = sel.value;
-      resultsEl.innerHTML = renderLsSummary(zone, ls);
-      wireSummaryClicks();
-      wireSortSelect(zone, ls);
-    });
-  }
-
-  // ============================================================
-  // Candidate-level sort — within a single assembly's result card
-  // ============================================================
-  var candSortMode = 'rank'; // reset whenever a different assembly is opened
-  var CAND_SORT_OPTIONS = [
-    { value:'rank',        label:'Declared result order' },
-    { value:'votes_high',  label:'Highest votes first' },
-    { value:'votes_low',   label:'Lowest votes first' },
-    { value:'margin_high', label:'Largest margin from winner' },
-    { value:'margin_low',  label:'Closest margin to winner' },
-    { value:'pct_high',    label:'Highest vote share %' },
-    { value:'name',        label:'Candidate name (A–Z)' },
-    { value:'party',       label:'Party (A–Z)' }
-  ];
-  function candMarginFromWinner(c, winnerVotes){
-    if(winnerVotes == null || c.votes == null) return null;
-    return winnerVotes - c.votes;
-  }
-  function sortCandidates(cands, mode, winnerVotes){
-    var arr = cands.slice();
-    switch(mode){
-      case 'votes_high':
-        return arr.sort(function(a,b){ return (b.votes||0) - (a.votes||0); });
-      case 'votes_low':
-        return arr.sort(function(a,b){ return (a.votes||0) - (b.votes||0); });
-      case 'margin_high':
-        return arr.sort(function(a,b){
-          var ma = candMarginFromWinner(a, winnerVotes), mb = candMarginFromWinner(b, winnerVotes);
-          if(ma===null) return 1; if(mb===null) return -1;
-          return mb - ma;
-        });
-      case 'margin_low':
-        return arr.sort(function(a,b){
-          var ma = candMarginFromWinner(a, winnerVotes), mb = candMarginFromWinner(b, winnerVotes);
-          if(ma===null) return 1; if(mb===null) return -1;
-          return ma - mb;
-        });
-      case 'pct_high':
-        return arr.sort(function(a,b){ return (b.pct||0) - (a.pct||0); });
-      case 'name':
-        return arr.sort(function(a,b){ return (a.name||'').localeCompare(b.name||''); });
-      case 'party':
-        return arr.sort(function(a,b){ return (fmtParty(a.party)||'').localeCompare(fmtParty(b.party)||''); });
-      case 'rank':
-      default:
-        return arr; // already in declared rank order
-    }
-  }
-  function candSortBarHtml(currentMode){
-    var opts = CAND_SORT_OPTIONS.map(function(o){
-      return '<option value="' + o.value + '"' + (o.value===currentMode?' selected':'') + '>' + escapeHtml(o.label) + '</option>';
-    }).join('');
-    return '<div class="sort-bar"><span class="sort-label">Sort candidates by</span><select id="candSortSelect">' + opts + '</select></div>';
-  }
-  function wireCandSortSelect(rec){
-    var sel = document.getElementById('candSortSelect');
-    if(!sel) return;
-    sel.addEventListener('change', function(){
-      candSortMode = sel.value;
-      renderResult(rec);
-    });
-  }
- 
-  // ============================================================
   // Zone-level summary: seats won by party across the whole zone
   // ============================================================
   function renderZoneSummary(zone){
@@ -1912,59 +1912,14 @@ License: MIT
   }
  
   // ============================================================
-  // 2024 Lok Sabha election result card
-  // ============================================================
-  function renderLs2024Card(zone, ls){
-    var result = getLs2024Result(ls);
-    if(!result){
-      return '<div class="ls2024-card">' +
-        '<div class="ls2024-head"><div class="ls2024-eyebrow">2024 Lok Sabha election</div><div class="ls2024-title">' + escapeHtml(ls) + '</div></div>' +
-        '<div class="ls2024-unavailable">2024 Lok Sabha result data is not available for this area.</div>' +
-      '</div>';
-  }
-    var maxVotes = Math.max.apply(null, result.candidates.map(function(c){ return c.votes||0; }));
-    var rowsHtml = result.candidates.map(function(c, idx){
-      var isWinner = c.rank === 'Winner';
-      var width = maxVotes > 0 ? Math.max(2, Math.round((c.votes||0) / maxVotes * 100)) : 2;
-      var c1 = partyColor(c.party);
-      var barColor = isWinner ? 'linear-gradient(90deg, #3F8462, var(--green))' :
-        (c1 ? 'linear-gradient(90deg, ' + shadeColor(c1,18) + ', ' + c1 + ')' : 'linear-gradient(90deg, var(--saffron-dim), var(--saffron))');
-      var rankTagText = isWinner ? 'Won' : (c.rank === 'Runner-1' ? 'Runner Up' : '2nd Runner Up');
-      return '<div class="ls2024-row">' +
-        '<div class="ls2024-row-top">' +
-          '<div class="ls2024-name">' + escapeHtml(c.name) +
-            '<span class="cand-tag party"' + partyTagStyle(c.party) + '>' + escapeHtml(fmtParty(c.party)) + '</span>' +
-            '<span class="cand-tag">' + escapeHtml(rankTagText) + '</span>' +
-          '</div>' +
-          '<div>' +
-            '<div class="ls2024-votes">' + fmtNum(c.votes) + '</div>' +
-            '<div class="ls2024-pct">' + fmtPct(c.pct) + '</div>' +
-          '</div>' +
-        '</div>' +
-        '<div class="ls2024-bar-track"><div class="ls2024-bar-fill" style="width:' + width + '%; background:' + barColor + '"></div></div>' +
-      '</div>';
-    }).join('');
- 
-    return '<div class="ls2024-card">' +
-      '<div class="ls2024-head">' +
-        '<div class="ls2024-eyebrow">2024 Lok Sabha election &middot; ' + escapeHtml(zone) + '</div>' +
-        '<div class="ls2024-title">' + escapeHtml(result.label) + '</div>' +
-      '</div>' +
-      '<div class="ls2024-body">' + rowsHtml + '</div>' +
-      '<div class="ls2024-foot">Top 3 finishers shown as published for the 2024 Lok Sabha general election in this constituency. Vote share is calculated against the combined votes of these three candidates only.</div>' +
-    '</div>';
-  }
- 
-  // ============================================================
   // Lok-Sabha-level summary: seats won by party within one LS area
   // ============================================================
   function renderLsSummary(zone, ls){
-    var rawSeats = (tree[zone] && tree[zone][ls]) ? tree[zone][ls] : [];
-    var seats = sortSeats(rawSeats, seatSortMode);
+    var seats = (tree[zone] && tree[zone][ls]) ? tree[zone][ls] : [];
  
     var partyWins = {};
     var totalVotesAll = 0;
-    rawSeats.forEach(function(rec){
+    seats.forEach(function(rec){
       (rec.candidates||[]).forEach(function(c){ totalVotesAll += (c.votes||0); });
       var winner = (rec.candidates||[]).filter(function(c){ return c.rank === 'Winner'; })[0];
       if(winner){
@@ -1986,13 +1941,11 @@ License: MIT
       '</div>';
     }).join('');
  
-    var seatRowsHtml = seats.map(function(rec){
+    var seatRowsHtml = seats.slice().sort(function(a,b){return a.assembly.localeCompare(b.assembly);}).map(function(rec){
       var winner = (rec.candidates||[]).filter(function(c){ return c.rank === 'Winner'; })[0];
-      var margin = seatMargin(rec);
-      var marginTxt = margin !== null ? (' &middot; margin ' + fmtNum(margin)) : '';
       return '<div class="ls-row" data-ac="' + escapeHtml(rec.assembly) + '">' +
         '<div class="ls-name">' + escapeHtml(rec.assembly) + '</div>' +
-        '<div class="ls-count">' + (winner ? escapeHtml(winner.name) + ' &middot; ' + escapeHtml(fmtParty(winner.party)||'—') + marginTxt : 'No data') + '</div>' +
+        '<div class="ls-count">' + (winner ? escapeHtml(winner.name) + ' &middot; ' + escapeHtml(fmtParty(winner.party)||'—') : 'No data') + '</div>' +
       '</div>';
     }).join('');
  
@@ -2004,21 +1957,19 @@ License: MIT
             '<div class="summary-title">' + escapeHtml(ls) + '</div>' +
           '</div>' +
           '<div class="summary-stats">' +
-            '<div class="summary-stat"><div class="v">' + rawSeats.length + '</div><div class="l">Assembly seats</div></div>' +
+            '<div class="summary-stat"><div class="v">' + seats.length + '</div><div class="l">Assembly seats</div></div>' +
             '<div class="summary-stat"><div class="v">' + fmtNum(totalVotesAll) + '</div><div class="l">Votes counted</div></div>' +
           '</div>' +
         '</div>' +
         '<div class="summary-body">' +
-          '<div class="share-title">Seats won by party (2025 assembly result)</div>' +
+          '<div class="share-title">Seats won by party</div>' +
           '<div class="party-bars">' + barsHtml + '</div>' +
           '<div class="summary-subnote">' +
             '<div class="share-title" style="margin-top:18px;">Assembly seats in this Lok Sabha area — tap to view result</div>' +
-            sortBarHtml(seatSortMode) +
             '<div class="ls-rows">' + seatRowsHtml + '</div>' +
           '</div>' +
         '</div>' +
-      '</div>' +
-      renderLs2024Card(zone, ls);
+      '</div>';
  
     return html;
   }
@@ -2096,7 +2047,7 @@ License: MIT
     }
  
     var winnerChips = [
-      chip(fmtParty(winner.party), 'party', partyTagStyle(winner.party)),
+      chip(fmtParty(winner.party), 'party'),
       chip(winner.caste)
     ].join('');
  
@@ -2115,19 +2066,13 @@ License: MIT
     var DISPLAY_LIMIT = 5; // winner + up to 4 runners-up
     var displayedCands = cands.slice(0, DISPLAY_LIMIT);
     var hiddenCount = cands.length - displayedCands.length;
-
-    // Sort only changes the *order* candidates are listed in below — the
-    // Elected MLA band and runner-up strip above always reflect the actual
-    // declared rank, regardless of the chosen sort.
-    var sortedDisplayCands = sortCandidates(displayedCands, candSortMode, winner.votes);
-
-    var candRowsHtml = sortedDisplayCands.map(function(c){
+ 
+    var candRowsHtml = displayedCands.map(function(c, i){
       var pctWidth = maxVotes > 0 ? Math.max(2, Math.round((c.votes||0) / maxVotes * 100)) : 2;
       var isWinner = c.rank === 'Winner';
-      var origIdx = cands.indexOf(c);
       return (
         '<div class="cand-row">' +
-          '<div class="cand-rank' + (isWinner?' is-winner':'') + '">' + rankShort(c.rank, origIdx) + '</div>' +
+          '<div class="cand-rank' + (isWinner?' is-winner':'') + '">' + rankShort(c.rank, i) + '</div>' +
           '<div class="cand-main">' +
             '<div class="cand-name-row">' +
               '<span class="cand-name" title="' + escapeHtml(c.name) + '">' + escapeHtml(c.name || 'Unnamed candidate') + '</span>' +
@@ -2135,7 +2080,7 @@ License: MIT
               (c.caste ? '<span class="cand-tag">' + escapeHtml(c.caste) + '</span>' : '') +
               '<span class="cand-tag">' + escapeHtml(rankLabel(c.rank)) + '</span>' +
             '</div>' +
-            '<div class="bar-track"><div class="bar-fill' + (isWinner?' is-winner':'') + '" style="width:' + pctWidth + '%' + (!isWinner && partyColor(c.party) ? ';background:linear-gradient(90deg,' + shadeColor(partyColor(c.party),18) + ',' + partyColor(c.party) + ')' : '') + '"></div></div>' +
+            '<div class="bar-track"><div class="bar-fill' + (isWinner?' is-winner':'') + '" style="width:' + pctWidth + '%"></div></div>' +
           '</div>' +
           '<div class="cand-figs">' +
             '<div class="cand-votes">' + fmtNum(c.votes) + '</div>' +
@@ -2177,7 +2122,6 @@ License: MIT
  
         '<div class="share-section">' +
           '<div class="share-title">Top result' + (displayedCands.length>1?'s':'') + ' &middot; ' + displayedCands.length + ' of ' + cands.length + ' candidates</div>' +
-          candSortBarHtml(candSortMode) +
           candRowsHtml +
         '</div>' +
  
@@ -2186,11 +2130,9 @@ License: MIT
           (hiddenCount > 0 ? ' ' + hiddenCount + ' more candidate' + (hiddenCount>1?'s':'') + ' contested this seat but are not shown above.' : '') +
           '</div>' +
         '</div>' +
-      '</div>' +
-      renderLs2024Card(rec.zone, rec.lokSabha);
+      '</div>';
  
     resultsEl.innerHTML = html;
-    wireCandSortSelect(rec);
   }
  
   // ============================================================
@@ -2204,7 +2146,6 @@ License: MIT
     } else if(zone && ls){
       resultsEl.innerHTML = renderLsSummary(zone, ls);
       wireSummaryClicks();
-      wireSortSelect(zone, ls);
     } else if(zone){
       resultsEl.innerHTML = renderZoneSummary(zone);
       wireSummaryClicks();
@@ -2390,7 +2331,6 @@ License: MIT
     var zone = zoneSelect.value;
     var ls = lsSelect.value;
     currentView = { zone: zone, ls: ls, ac: '' };
-    seatSortMode = 'name';
     populateAssemblies(zone, ls);
     renderView();
   });
@@ -2400,7 +2340,6 @@ License: MIT
     var ls = lsSelect.value;
     var ac = acSelect.value;
     currentView = { zone: zone, ls: ls, ac: ac };
-    candSortMode = 'rank';
     renderView();
   });
  
@@ -2436,6 +2375,225 @@ License: MIT
  
   init();
  
+})();
+</script>
+
+<script>
+/* ============================================================
+   HISTORICAL RESULTS MODULE — gid 19500159
+   Year pill filter + live search, no dropdowns
+============================================================ */
+(function(){
+  'use strict';
+
+  var PUB_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTS7hLPbuyjNhmq4DfID6awywqonpeaX3ZAFbMyvrj4x5D0t3y-5OgTgsDU90AivJ69fQMXaZnY-BiO/pub';
+  var HIST_GID = '19500159';
+  var PAGE_SIZE = 50;
+
+  var histGrid   = document.getElementById('histGrid');
+  var histStats  = document.getElementById('histStats');
+  var yearPills  = document.getElementById('yearPills');
+  var histSearch = document.getElementById('histSearch');
+
+  var HIST_DATA = [];      // all rows
+  var activeYear = 'All'; // current year filter
+  var searchQ    = '';    // current search query
+  var visibleCount = PAGE_SIZE;
+
+  // Party color map (same as main section)
+  var PARTY_COLORS_H = {
+    'bjp':'#FF9933','jd(u)':'#00843D','jdu':'#00843D','rjd':'#00A651',
+    'inc':'#19A0DB','congress':'#19A0DB','cpi':'#D50000','cpi(ml)(l)':'#E53935',
+    'cpi(ml) (l)':'#E53935','ljp':'#1976D2','rljp':'#0D47A1',
+    'hams':'#795548','ham(s)':'#795548','vip':'#8E24AA','vsip':'#8E24AA',
+    'aimim':'#00695C','aimeiem':'#00695C','bsp':'#1565C0','aap':'#1E88E5',
+    'ind':'#9E9E9E','independent':'#9E9E9E','sp':'#E91E63',
+    'ljp (rv)':'#1976D2','ljp-r':'#1976D2'
+  };
+  var NEEDS_DARK_H = {};
+
+  function hPartyColor(party){
+    if(!party) return null;
+    return PARTY_COLORS_H[party.trim().toLowerCase()] || null;
+  }
+  function hPartyStyle(party){
+    var c = hPartyColor(party);
+    if(!c) return '';
+    return ' style="background:' + c + ';color:#fff;"';
+  }
+
+  function hEsc(s){
+    if(s===null||s===undefined) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+  function hFmt(n){
+    var v = parseInt(String(n).replace(/,/g,''),10);
+    if(isNaN(v)) return '—';
+    return v.toLocaleString('en-IN');
+  }
+  function hNorm(s){
+    if(!s) return '';
+    return String(s).toLowerCase().replace(/\s+/g,' ').trim();
+  }
+
+  // ---- Fetch ----
+  function fetchHistData(){
+    var url = PUB_BASE + '?output=csv&gid=' + HIST_GID + '&single=true&_=' + Date.now();
+    return fetch(url, { cache:'no-store' })
+      .then(function(r){ if(!r.ok) throw new Error('HTTP '+r.status); return r.text(); })
+      .then(function(text){
+        var parsed = Papa.parse(text, { header:true, skipEmptyLines:true });
+        return parsed.data;
+      });
+  }
+
+  // ---- Build pill strip ----
+  function buildYearPills(rows){
+    var yearCounts = {};
+    rows.forEach(function(r){
+      var y = String(r.Year||'').trim();
+      if(!y) return;
+      yearCounts[y] = (yearCounts[y]||0) + 1;
+    });
+    // group sub-years: 2005a/2005b both count under 2005
+    var yearGroups = {}; // display-year -> count
+    Object.keys(yearCounts).forEach(function(y){
+      var base = y.replace(/[^0-9]/g,'');
+      yearGroups[base] = (yearGroups[base]||0) + yearCounts[y];
+    });
+    var years = Object.keys(yearGroups).sort();
+    var total = rows.length;
+
+    var html = '<button class="year-pill active" data-year="All">All <span class="pill-count">' + total + '</span></button>';
+    years.forEach(function(y){
+      html += '<button class="year-pill" data-year="' + hEsc(y) + '">' + hEsc(y) + ' <span class="pill-count">' + yearGroups[y] + '</span></button>';
+    });
+    yearPills.innerHTML = html;
+
+    yearPills.querySelectorAll('.year-pill').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        yearPills.querySelectorAll('.year-pill').forEach(function(b){ b.classList.remove('active'); });
+        btn.classList.add('active');
+        activeYear = btn.getAttribute('data-year');
+        visibleCount = PAGE_SIZE;
+        renderHist();
+      });
+    });
+  }
+
+  // ---- Filter rows ----
+  function getFiltered(){
+    return HIST_DATA.filter(function(r){
+      var ry = String(r.Year||'').replace(/[^0-9]/g,'');
+      if(activeYear !== 'All' && ry !== activeYear) return false;
+      if(searchQ){
+        var haystack = hNorm(
+          (r.Constituency||'') + ' ' +
+          (r.Winner||'') + ' ' + (r['Winner Party']||'') + ' ' +
+          (r['Runner Up']||'') + ' ' + (r['Runner Party']||'') + ' ' +
+          (r.Year||'')
+        );
+        if(haystack.indexOf(searchQ) === -1) return false;
+      }
+      return true;
+    });
+  }
+
+  // ---- Render stats ----
+  function renderStats(filtered){
+    var parties = {};
+    filtered.forEach(function(r){
+      var p = (r['Winner Party']||'').trim() || 'Other';
+      parties[p] = (parties[p]||0) + 1;
+    });
+    var topParty = Object.keys(parties).sort(function(a,b){ return parties[b]-parties[a]; })[0] || '—';
+    var years = {};
+    filtered.forEach(function(r){ var y = String(r.Year||'').replace(/[^0-9]/g,''); if(y) years[y]=1; });
+    var yearCount = Object.keys(years).length;
+
+    histStats.innerHTML =
+      '<div class="hist-stat"><div class="hv">' + filtered.length + '</div><div class="hl">Seats shown</div></div>' +
+      '<div class="hist-stat"><div class="hv">' + Object.keys(parties).length + '</div><div class="hl">Parties won</div></div>' +
+      '<div class="hist-stat"><div class="hv">' + hEsc(topParty) + '</div><div class="hl">Most wins</div></div>' +
+      (activeYear === 'All' ? '<div class="hist-stat"><div class="hv">' + yearCount + '</div><div class="hl">Election years</div></div>' : '');
+  }
+
+  // ---- Render grid ----
+  function renderHist(){
+    var filtered = getFiltered();
+    renderStats(filtered);
+
+    if(filtered.length === 0){
+      histGrid.innerHTML = '<div class="hist-empty"><p>No results match your filters. Try a different year or search term.</p></div>';
+      return;
+    }
+
+    var slice = filtered.slice(0, visibleCount);
+    var hasMore = filtered.length > visibleCount;
+
+    var rowsHtml = slice.map(function(r){
+      var winnerParty = (r['Winner Party']||'').trim();
+      var winnerVotes = hFmt(r['Winner Votes']||'');
+      var runnerVotes = hFmt(r['Runner Votes']||'');
+      var margin = hFmt(r['Margin']||'');
+      return (
+        '<div class="hist-row">' +
+          '<div class="hr-year">' + hEsc((r.Year||'').replace(/[^0-9]/g,'')) + '</div>' +
+          '<div class="hr-const">' + hEsc(r.Constituency||'—') + '</div>' +
+          '<div class="hist-winner-cell">' +
+            '<div class="hist-winner-name" title="' + hEsc(r.Winner||'') + '">' + hEsc(r.Winner||'—') + '</div>' +
+            (winnerParty ? '<div class="hist-party-chip"' + hPartyStyle(winnerParty) + '>' + hEsc(winnerParty) + '</div>' : '') +
+          '</div>' +
+          '<div class="hr-winner-votes">' + winnerVotes + '</div>' +
+          '<div class="hr-runner" title="' + hEsc(r['Runner Up']||'') + '">' + hEsc(r['Runner Up']||'—') + '</div>' +
+          '<div class="hr-margin"><span class="hist-margin-badge">+' + margin + '</span></div>' +
+        '</div>'
+      );
+    }).join('');
+
+    var moreHtml = hasMore ?
+      '<div class="hist-load-more"><button id="histLoadMore">Show more results (' + (filtered.length - visibleCount) + ' remaining)</button></div>' : '';
+
+    histGrid.innerHTML =
+      '<div class="hist-grid-head">' +
+        '<div class="hgh">Year</div>' +
+        '<div class="hgh">Constituency</div>' +
+        '<div class="hgh">Winner</div>' +
+        '<div class="hgh">Votes</div>' +
+        '<div class="hgh hgh-runner">Runner Up</div>' +
+        '<div class="hgh">Margin</div>' +
+      '</div>' +
+      rowsHtml +
+      moreHtml;
+
+    var loadMoreBtn = document.getElementById('histLoadMore');
+    if(loadMoreBtn){
+      loadMoreBtn.addEventListener('click', function(){
+        visibleCount += PAGE_SIZE;
+        renderHist();
+        // scroll to keep position
+        histGrid.scrollIntoView({ behavior:'smooth', block:'start' });
+      });
+    }
+  }
+
+  // ---- Search wiring ----
+  histSearch.addEventListener('input', function(){
+    searchQ = hNorm(histSearch.value);
+    visibleCount = PAGE_SIZE;
+    renderHist();
+  });
+
+  // ---- Init ----
+  fetchHistData().then(function(rows){
+    HIST_DATA = rows;
+    buildYearPills(rows);
+    renderHist();
+  }).catch(function(err){
+    console.error('Historical data load failed:', err);
+    histGrid.innerHTML = '<div class="hist-empty"><p>Could not load historical data. Check your connection and try refreshing.</p></div>';
+  });
+
 })();
 </script>
 </body>
