@@ -3193,44 +3193,74 @@ License: MIT
       var w = r.winner || {};
       var ru = r.runner || {};
 
-      // Party chip style — use color as background
       var wColor = lsPartyColor(w.party);
-      var wChipStyle = wColor ? ' style="background:' + wColor + ';color:#fff;"' : '';
-      var ruColor = lsPartyColor(ru.party);
-      var ruChipStyle = ruColor ? ' style="background:' + ruColor + ';color:#fff;"' : '';
+      var winnerBandStyle = '';
+      if(wColor){
+        winnerBandStyle = ' style="background: linear-gradient(135deg, ' + wColor + ' 0%, ' + shadeColorLs(wColor, -28) + ' 100%); color: var(--parchment);"';
+      }
+
+      function chip(text, isParty){
+        if(!text) return '';
+        var cls = isParty ? 'chip party' : 'chip';
+        var style = isParty ? lsPartyStyle(text) : '';
+        return '<span class="' + cls + '" ' + style + '>' + lsEsc(text) + '</span>';
+      }
+
+      var winnerChips = chip(w.party, true);
+      var runnerChips = chip(ru.party, true);
+
+      var runnerUpHtml = '';
+      if(ru.name){
+        runnerUpHtml =
+          '<div class="runnerup-strip">' +
+            '<div class="ru-label">Runner up</div>' +
+            '<div class="ru-main">' +
+              '<span class="ru-name">' + lsEsc(ru.name) + '</span>' +
+              runnerChips +
+            '</div>' +
+            '<div class="ru-votes">' + lsFmt(ru.votes) + '</div>' +
+          '</div>';
+      }
+
+      var marginHtml = '';
+      if(r.margin){
+        marginHtml =
+          '<div class="margin-strip">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>' +
+            '<div class="txt">Won by a margin of <b>' + lsEsc(r.margin) + ' votes</b></div>' +
+          '</div>';
+      }
 
       return (
-        '<div class="ls24-row">' +
-          '<div class="lr-num">' + lsEsc(d.num) + '</div>' +
-          '<div class="lr-const" title="' + lsEsc(d.name) + '">' + lsEsc(d.name) + '</div>' +
-          '<div class="ls24-winner-cell">' +
-            '<div class="ls24-winner-name" title="' + lsEsc(w.name||'') + '">' + lsEsc(w.name||'—') + '</div>' +
-            (w.party ? '<span class="ls24-party-chip"' + wChipStyle + '>' + lsEsc(w.party) + '</span>' : '') +
+        '<div class="ac-card" style="margin-bottom:20px;">' +
+          '<div class="ac-head" style="padding-bottom:18px;">' +
+            '<div class="ac-head-left">' +
+              '<div class="crumb">LOK SABHA 2024 &middot; SEAT NO. <b>' + lsEsc(d.num) + '</b></div>' +
+              '<div class="ac-name">' + lsEsc(d.name) + '</div>' +
+            '</div>' +
           '</div>' +
-          '<div class="lr-votes">' + lsFmt(w.votes) + '</div>' +
-          '<div class="ls24-runner-cell">' +
-            '<div class="ls24-runner-name-t" title="' + lsEsc(ru.name||'') + '">' + lsEsc(ru.name||'—') + '</div>' +
-            (ru.party ? '<span class="ls24-runner-chip"' + ruChipStyle + '>' + lsEsc(ru.party) + '</span>' : '') +
+          
+          '<div class="winner-band"' + winnerBandStyle + '>' +
+            '<div class="winner-tag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 6.9H22l-5.8 4.3 2.2 7-6.4-4.6L5.6 20.2l2.2-7L2 9h7.6z"/></svg>Elected MP</div>' +
+            '<div class="winner-row">' +
+              '<div>' +
+                '<div class="winner-name">' + lsEsc(w.name || '—') + '</div>' +
+                '<div class="winner-meta">' + winnerChips + '</div>' +
+              '</div>' +
+              '<div class="winner-votes">' +
+                '<div class="num">' + lsFmt(w.votes) + '</div>' +
+              '</div>' +
+            '</div>' +
           '</div>' +
-          '<div class="lr-runner-votes">' + lsFmt(ru.votes) + '</div>' +
-          '<div class="lr-margin">' + (r.margin ? '<span class="ls24-margin-badge">+' + lsEsc(r.margin) + '</span>' : '—') + '</div>' +
+          
+          marginHtml +
+          runnerUpHtml +
+          '<div style="height:22px;"></div>' +
         '</div>'
       );
     }).join('');
 
-    ls24Grid.innerHTML =
-      '<div class="ls24-table-wrap">' +
-        '<div class="ls24-thead">' +
-          '<div class="lth">#</div>' +
-          '<div class="lth">Constituency</div>' +
-          '<div class="lth">Winner</div>' +
-          '<div class="lth lth-winner-votes">Votes</div>' +
-          '<div class="lth lth-runner">Runner-up</div>' +
-          '<div class="lth lth-runner-votes">Votes</div>' +
-          '<div class="lth">Margin</div>' +
-        '</div>' +
-        rowsHtml +
-      '</div>';
+    ls24Grid.innerHTML = '<div>' + rowsHtml + '</div>';
   }
 
   // Tiny shade helper (local to avoid collision)
