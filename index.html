@@ -3194,20 +3194,22 @@ License: MIT
       var ru = r.runner || {};
 
       var wColor = lsPartyColor(w.party);
+      var winnerBandClass = 'winner-band';
       var winnerBandStyle = '';
       if(wColor){
+        // In LS24, none of the parties (BJP, JDU, RJD etc) use light enough colors to require dark text
         winnerBandStyle = ' style="background: linear-gradient(135deg, ' + wColor + ' 0%, ' + shadeColorLs(wColor, -28) + ' 100%); color: var(--parchment);"';
       }
 
-      function chip(text, isParty){
+      function chip(text, isParty, applyStyle){
         if(!text) return '';
         var cls = isParty ? 'chip party' : 'chip';
-        var style = isParty ? lsPartyStyle(text) : '';
+        var style = (isParty && applyStyle) ? lsPartyStyle(text) : '';
         return '<span class="' + cls + '" ' + style + '>' + lsEsc(text) + '</span>';
       }
 
-      var winnerChips = chip(w.party, true);
-      var runnerChips = chip(ru.party, true);
+      var winnerChips = chip(w.party, true, false);
+      var runnerChips = chip(ru.party, true, true);
 
       var runnerUpHtml = '';
       if(ru.name){
