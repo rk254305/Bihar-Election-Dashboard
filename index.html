@@ -1148,7 +1148,7 @@
     color: var(--saffron);
   }
 
-  /* ========== LOK SABHA 2024 SECTION ========== */
+  /* ========== LOK SABHA 2024 SECTION — ROW LAYOUT ========== */
   .ls24-section{
     max-width: 980px;
     margin: 52px auto 0;
@@ -1170,7 +1170,6 @@
     margin:0;
     max-width:560px;
   }
-  /* search */
   .ls24-search-wrap{
     background: var(--paper);
     border-radius:14px;
@@ -1188,7 +1187,6 @@
     font-family:'Inter',sans-serif; font-size:14px; font-weight:500; color: var(--ink); min-width:0;
   }
   #ls24Search::placeholder{ color: var(--ink-faint2); font-weight:400; }
-  /* stats */
   .ls24-stats{
     display:flex; gap:14px; flex-wrap:wrap; margin-bottom:18px;
   }
@@ -1208,105 +1206,116 @@
     letter-spacing:0.06em; text-transform:uppercase;
     color: rgba(247,243,234,0.45);
   }
-  /* card grid */
-  .ls24-grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-    gap:16px;
-  }
-  .ls24-card{
+  /* table wrap */
+  .ls24-table-wrap{
     background: var(--paper);
-    border-radius:16px;
+    border-radius:18px;
     box-shadow: var(--shadow);
     border:1px solid rgba(255,255,255,0.06);
     overflow:hidden;
     animation: rise .35s ease both;
-    transition: transform .18s ease, box-shadow .18s ease;
   }
-  .ls24-card:hover{
-    transform: translateY(-3px);
-    box-shadow: 0 4px 6px rgba(27,36,48,0.08), 0 16px 40px -12px rgba(27,36,48,0.28);
+  /* table head */
+  .ls24-thead{
+    display:grid;
+    grid-template-columns: 44px 1fr 1fr 86px 1fr 86px 80px;
+    gap:0;
+    padding:10px 22px;
+    background: var(--parchment-dim);
+    border-bottom:1px solid var(--line);
   }
-  .ls24-card-num{
+  .ls24-thead .lth{
     font-family:'JetBrains Mono',monospace;
     font-size:9.5px; letter-spacing:0.1em; text-transform:uppercase;
-    color: rgba(255,255,255,0.5); margin-bottom:8px;
+    color: var(--ink-faint2); font-weight:600; padding:3px 0;
   }
-  .ls24-winner-band{
-    padding:16px 18px 14px;
-    background: linear-gradient(135deg, var(--green) 0%, #1E3D2C 100%);
-    color: var(--parchment);
-    position:relative; overflow:hidden;
+  /* row */
+  .ls24-row{
+    display:grid;
+    grid-template-columns: 44px 1fr 1fr 86px 1fr 86px 80px;
+    gap:0;
+    padding:12px 22px;
+    border-bottom:1px solid var(--line-soft);
+    align-items:center;
+    transition: background .12s ease;
   }
-  .ls24-winner-band::after{
-    content:""; position:absolute; right:-20px; top:-20px;
-    width:100px; height:100px; border-radius:50%;
-    background: rgba(255,255,255,0.04);
+  .ls24-row:last-child{ border-bottom:none; }
+  .ls24-row:hover{ background: var(--parchment); }
+  /* seat number */
+  .ls24-row .lr-num{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; font-weight:700;
+    color: var(--saffron);
   }
-  .ls24-winner-band .ls24-constituency{
-    font-family:'Fraunces',serif; font-size:16px; font-weight:600;
-    line-height:1.15; margin-bottom:8px; position:relative;
+  /* constituency */
+  .ls24-row .lr-const{
+    font-size:13px; font-weight:600; color: var(--ink);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    padding-right:10px;
   }
-  .ls24-winner-band .ls24-winner-name{
-    font-size:13.5px; font-weight:600; margin-bottom:5px; position:relative;
-    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  /* winner cell */
+  .ls24-winner-cell{
+    display:flex; flex-direction:column; gap:4px; min-width:0; padding-right:8px;
   }
-  .ls24-winner-band .ls24-chips{
-    display:flex; gap:6px; flex-wrap:wrap; position:relative;
-  }
-  .ls24-chip{
-    font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
-    padding:3px 8px; border-radius:6px;
-    background: rgba(255,255,255,0.18); color:#fff;
-    white-space:nowrap;
-  }
-  .ls24-chip.votes-chip{
-    background: rgba(0,0,0,0.2); letter-spacing:0.02em;
-  }
-  .ls24-runners{
-    padding:12px 18px 14px;
-    display:flex; flex-direction:column; gap:8px;
-  }
-  .ls24-runner-row{
-    display:flex; align-items:center; justify-content:space-between; gap:8px;
-  }
-  .ls24-runner-left{ min-width:0; flex:1; }
-  .ls24-runner-label{
-    font-family:'JetBrains Mono',monospace; font-size:9px;
-    letter-spacing:0.08em; text-transform:uppercase;
-    color: var(--ink-faint2); margin-bottom:2px;
-  }
-  .ls24-runner-name{
+  .ls24-winner-name{
     font-size:12.5px; font-weight:600; color: var(--ink);
     white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .ls24-runner-right{ text-align:right; flex-shrink:0; }
-  .ls24-runner-party{
+  .ls24-party-chip{
+    display:inline-flex; align-items:center;
+    padding:2px 7px; border-radius:5px;
     font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
-    padding:2px 7px; border-radius:5px; background: var(--ink);
-    color: var(--parchment); display:inline-block; margin-bottom:3px;
-    white-space:nowrap;
+    background: var(--ink); color: var(--parchment);
+    width:fit-content; max-width:100%;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .ls24-runner-votes{
-    font-family:'JetBrains Mono',monospace; font-size:10.5px;
-    color: var(--ink-faint); display:block;
+  /* votes */
+  .ls24-row .lr-votes{
+    font-family:'JetBrains Mono',monospace;
+    font-size:12px; font-weight:700; color: var(--ink);
   }
-  .ls24-margin-bar{
-    margin:0 18px 14px;
-    padding:8px 12px;
-    background: var(--parchment);
-    border-radius:8px;
-    border:1px dashed var(--bronze);
-    display:flex; align-items:center; justify-content:space-between; gap:8px;
+  /* runner */
+  .ls24-runner-cell{
+    display:flex; flex-direction:column; gap:4px; min-width:0; padding-right:8px;
   }
-  .ls24-margin-label{
-    font-family:'JetBrains Mono',monospace; font-size:9.5px;
-    letter-spacing:0.06em; text-transform:uppercase; color: var(--ink-faint2);
+  .ls24-runner-name-t{
+    font-size:12px; font-weight:600; color: var(--ink-faint);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
   }
-  .ls24-margin-val{
-    font-family:'JetBrains Mono',monospace; font-size:11px;
-    font-weight:700; color: var(--brick);
+  .ls24-runner-chip{
+    display:inline-flex; align-items:center;
+    padding:2px 7px; border-radius:5px;
+    font-family:'JetBrains Mono',monospace; font-size:10px; font-weight:700;
+    background: var(--parchment-dim); color: var(--ink-soft);
+    width:fit-content; max-width:100%;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .ls24-row .lr-runner-votes{
+    font-family:'JetBrains Mono',monospace;
+    font-size:11px; color: var(--ink-faint2);
+  }
+  /* margin */
+  .ls24-row .lr-margin{ text-align:right; }
+  .ls24-margin-badge{
+    display:inline-block; padding:3px 8px; border-radius:6px;
+    background: var(--parchment-dim);
+    font-family:'JetBrains Mono',monospace; font-size:10.5px; font-weight:600;
+    color: var(--brick); white-space:nowrap;
+  }
+  /* responsive — hide runner votes on small */
+  @media (max-width:760px){
+    .ls24-thead{ grid-template-columns: 36px 1fr 1fr 70px 80px; }
+    .ls24-thead .lth-runner-votes,
+    .ls24-thead .lth-runner{ display:none; }
+    .ls24-row{ grid-template-columns: 36px 1fr 1fr 70px 80px; }
+    .ls24-row .lr-runner-votes,
+    .ls24-row .ls24-runner-cell{ display:none; }
+  }
+  @media (max-width:540px){
+    .ls24-thead{ grid-template-columns: 36px 1fr 1fr 72px; }
+    .ls24-thead .lth-winner-votes{ display:none; }
+    .ls24-row{ grid-template-columns: 36px 1fr 1fr 72px; }
+    .ls24-row .lr-votes{ display:none; }
   }
   .ls24-empty{
     padding:48px 24px; text-align:center;
@@ -2944,69 +2953,49 @@ License: MIT
       return;
     }
 
-    var cardsHtml = filtered.map(function(d){
+    var rowsHtml = filtered.map(function(d){
       var r = d.result;
       var w = r.winner || {};
       var ru = r.runner || {};
-      var sec = r.second || {};
 
-      // Winner band color from party
+      // Party chip style — use color as background
       var wColor = lsPartyColor(w.party);
-      var bandStyle = wColor
-        ? 'style="background:linear-gradient(135deg,' + wColor + ' 0%,' + shadeColorLs(wColor,-30) + ' 100%);"'
-        : '';
-
-      var runnerHtml = ru.name ?
-        '<div class="ls24-runner-row">' +
-          '<div class="ls24-runner-left">' +
-            '<div class="ls24-runner-label">Runner-up</div>' +
-            '<div class="ls24-runner-name" title="' + lsEsc(ru.name) + '">' + lsEsc(ru.name) + '</div>' +
-          '</div>' +
-          '<div class="ls24-runner-right">' +
-            (ru.party ? '<span class="ls24-runner-party" ' + lsPartyStyle(ru.party) + '>' + lsEsc(ru.party) + '</span>' : '') +
-            '<span class="ls24-runner-votes">' + lsFmt(ru.votes) + '</span>' +
-          '</div>' +
-        '</div>' : '';
-
-      var secondHtml = sec.name ?
-        '<div class="ls24-runner-row">' +
-          '<div class="ls24-runner-left">' +
-            '<div class="ls24-runner-label">2nd Runner-up</div>' +
-            '<div class="ls24-runner-name" title="' + lsEsc(sec.name) + '">' + lsEsc(sec.name) + '</div>' +
-          '</div>' +
-          '<div class="ls24-runner-right">' +
-            (sec.party ? '<span class="ls24-runner-party" ' + lsPartyStyle(sec.party) + '>' + lsEsc(sec.party) + '</span>' : '') +
-            '<span class="ls24-runner-votes">' + lsFmt(sec.votes) + '</span>' +
-          '</div>' +
-        '</div>' : '';
-
-      var marginHtml = r.margin ?
-        '<div class="ls24-margin-bar">' +
-          '<span class="ls24-margin-label">Victory margin</span>' +
-          '<span class="ls24-margin-val">+' + lsEsc(r.margin) + '</span>' +
-        '</div>' : '';
+      var wChipStyle = wColor ? ' style="background:' + wColor + ';color:#fff;"' : '';
+      var ruColor = lsPartyColor(ru.party);
+      var ruChipStyle = ruColor ? ' style="background:' + ruColor + ';color:#fff;"' : '';
 
       return (
-        '<div class="ls24-card">' +
-          '<div class="ls24-winner-band" ' + bandStyle + '>' +
-            '<div class="ls24-card-num">' + (d.num ? 'Seat ' + lsEsc(d.num) : '') + '</div>' +
-            '<div class="ls24-constituency" title="' + lsEsc(d.name) + '">' + lsEsc(d.name) + '</div>' +
+        '<div class="ls24-row">' +
+          '<div class="lr-num">' + lsEsc(d.num) + '</div>' +
+          '<div class="lr-const" title="' + lsEsc(d.name) + '">' + lsEsc(d.name) + '</div>' +
+          '<div class="ls24-winner-cell">' +
             '<div class="ls24-winner-name" title="' + lsEsc(w.name||'') + '">' + lsEsc(w.name||'—') + '</div>' +
-            '<div class="ls24-chips">' +
-              (w.party ? '<span class="ls24-chip">' + lsEsc(w.party) + '</span>' : '') +
-              (w.votes ? '<span class="ls24-chip votes-chip">' + lsFmt(w.votes) + ' votes</span>' : '') +
-            '</div>' +
+            (w.party ? '<span class="ls24-party-chip"' + wChipStyle + '>' + lsEsc(w.party) + '</span>' : '') +
           '</div>' +
-          '<div class="ls24-runners">' +
-            runnerHtml +
-            secondHtml +
+          '<div class="lr-votes">' + lsFmt(w.votes) + '</div>' +
+          '<div class="ls24-runner-cell">' +
+            '<div class="ls24-runner-name-t" title="' + lsEsc(ru.name||'') + '">' + lsEsc(ru.name||'—') + '</div>' +
+            (ru.party ? '<span class="ls24-runner-chip"' + ruChipStyle + '>' + lsEsc(ru.party) + '</span>' : '') +
           '</div>' +
-          marginHtml +
+          '<div class="lr-runner-votes">' + lsFmt(ru.votes) + '</div>' +
+          '<div class="lr-margin">' + (r.margin ? '<span class="ls24-margin-badge">+' + lsEsc(r.margin) + '</span>' : '—') + '</div>' +
         '</div>'
       );
     }).join('');
 
-    ls24Grid.innerHTML = '<div class="ls24-grid">' + cardsHtml + '</div>';
+    ls24Grid.innerHTML =
+      '<div class="ls24-table-wrap">' +
+        '<div class="ls24-thead">' +
+          '<div class="lth">#</div>' +
+          '<div class="lth">Constituency</div>' +
+          '<div class="lth">Winner</div>' +
+          '<div class="lth lth-winner-votes">Votes</div>' +
+          '<div class="lth lth-runner">Runner-up</div>' +
+          '<div class="lth lth-runner-votes">Votes</div>' +
+          '<div class="lth">Margin</div>' +
+        '</div>' +
+        rowsHtml +
+      '</div>';
   }
 
   // Tiny shade helper (local to avoid collision)
