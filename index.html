@@ -837,11 +837,146 @@
     .status-pill .ring{ animation:none; }
   }
 
-  /* ========== HISTORICAL RESULTS SECTION ========== */
+  /* ========== LEFT DRAWER — Historical Results ========== */
+  /* Floating toggle button */
+  .drawer-toggle{
+    position:fixed;
+    left:0;
+    top:50%;
+    transform:translateY(-50%);
+    z-index:200;
+    background: linear-gradient(135deg, var(--saffron) 0%, var(--bronze) 100%);
+    color:#fff;
+    border:none;
+    border-radius:0 14px 14px 0;
+    padding:16px 10px;
+    cursor:pointer;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    box-shadow: 4px 0 24px rgba(27,36,48,0.35);
+    transition: background .2s ease, box-shadow .2s ease, left .35s cubic-bezier(.4,0,.2,1);
+    font-family:'JetBrains Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    writing-mode:vertical-rl;
+    text-orientation:mixed;
+    line-height:1;
+  }
+  .drawer-toggle:hover{
+    background: linear-gradient(135deg, #C86A2A 0%, #9A7A3E 100%);
+    box-shadow: 6px 0 32px rgba(27,36,48,0.45);
+  }
+  .drawer-toggle .dt-icon{
+    writing-mode:horizontal-tb;
+    font-size:16px;
+    line-height:1;
+  }
+  /* Overlay */
+  .drawer-overlay{
+    position:fixed;
+    inset:0;
+    background: rgba(10,15,22,0.62);
+    z-index:300;
+    opacity:0;
+    pointer-events:none;
+    transition: opacity .35s cubic-bezier(.4,0,.2,1);
+    backdrop-filter: blur(2px);
+  }
+  .drawer-overlay.open{
+    opacity:1;
+    pointer-events:all;
+  }
+  /* Drawer panel */
+  .drawer-panel{
+    position:fixed;
+    left:0; top:0; bottom:0;
+    width: min(560px, 92vw);
+    background: var(--ink);
+    z-index:400;
+    transform: translateX(-100%);
+    transition: transform .35s cubic-bezier(.4,0,.2,1);
+    display:flex;
+    flex-direction:column;
+    box-shadow: 6px 0 48px rgba(10,15,22,0.55);
+    border-right: 1px solid rgba(255,255,255,0.08);
+    overflow: hidden;
+  }
+  .drawer-panel.open{
+    transform: translateX(0);
+  }
+  /* Drawer header bar */
+  .drawer-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:18px 22px 16px;
+    border-bottom:1px solid rgba(255,255,255,0.10);
+    background: linear-gradient(180deg, rgba(255,255,255,0.04) 0%, transparent 100%);
+    flex-shrink:0;
+  }
+  .drawer-header-left{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .drawer-header-icon{
+    width:36px;height:36px;
+    border-radius:10px;
+    background: linear-gradient(135deg, var(--saffron) 0%, var(--bronze) 100%);
+    display:flex;align-items:center;justify-content:center;
+    color:#fff;
+    flex-shrink:0;
+  }
+  .drawer-header-title{
+    font-family:'Fraunces',serif;
+    font-size:17px;
+    font-weight:600;
+    color: var(--parchment);
+    line-height:1.1;
+  }
+  .drawer-header-sub{
+    font-family:'JetBrains Mono',monospace;
+    font-size:10px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color: rgba(247,243,234,0.45);
+    margin-top:2px;
+  }
+  .drawer-close{
+    width:34px;height:34px;
+    border-radius:50%;
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    display:flex;align-items:center;justify-content:center;
+    cursor:pointer;
+    color: rgba(247,243,234,0.65);
+    transition: background .15s, color .15s;
+    flex-shrink:0;
+  }
+  .drawer-close:hover{
+    background: rgba(255,255,255,0.14);
+    color: var(--parchment);
+  }
+  /* Drawer scrollable body */
+  .drawer-body{
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding: 20px 20px 32px;
+    /* Custom scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,0.18) transparent;
+  }
+  .drawer-body::-webkit-scrollbar{ width:5px; }
+  .drawer-body::-webkit-scrollbar-track{ background:transparent; }
+  .drawer-body::-webkit-scrollbar-thumb{ background: rgba(255,255,255,0.18); border-radius:3px; }
+
+  /* ========== HISTORICAL RESULTS SECTION (inside drawer) ========== */
   .hist-section{
-    max-width: 980px;
-    margin: 48px auto 0;
-    padding: 0 20px;
+    /* inside drawer, no margin/padding override needed */
   }
   .hist-divider{
     display:flex;
@@ -1463,42 +1598,95 @@
 
   </div>
 
-  <!-- ========== HISTORICAL RESULTS SECTION ========== -->
-  <div class="hist-section" id="histSection">
-
-    <div class="hist-divider">
-      <div class="hist-divider-line"></div>
-      <div class="hist-divider-label">Historical Archive</div>
-      <div class="hist-divider-line"></div>
-    </div>
-
-    <div class="hist-header">
-      <h2>Bihar elections, <em>across every year</em></h2>
-      <p>Winners and runners-up for every constituency across the 2005 (both phases), 2010, 2015 and 2020 Vidhan Sabha elections. Filter by year or search any name, party or place.</p>
-    </div>
-
-    <div class="hist-controls">
-      <span class="hist-controls-label">Filter year</span>
-      <div id="yearPills"></div>
-    </div>
-
-    <div class="hist-search-wrap">
-      <div class="hist-search-inner">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-        <input type="text" id="histSearch" placeholder="Search constituency, winner name, party…" autocomplete="off">
-      </div>
-    </div>
-
-    <div class="hist-stats" id="histStats"></div>
-
-    <div class="hist-grid-wrap" id="histGrid">
-      <div class="hist-empty"><p>Loading historical data…</p></div>
-    </div>
-
-  </div>
-
   <footer>DATA SOURCED LIVE FROM GOOGLE SHEETS &middot; VIDHAN SABHA AC RESULTS + LOK SABHA 2024 + HISTORICAL ARCHIVE &middot; BIHAR ELECTIONS REGISTER</footer>
 </div>
+
+<!-- ========== LEFT DRAWER TOGGLE BUTTON ========== -->
+<button class="drawer-toggle" id="drawerToggle" aria-label="Open Historical Results">
+  <span class="dt-icon">&#128196;</span>
+  Last 5 Year Results
+</button>
+
+<!-- ========== DRAWER OVERLAY ========== -->
+<div class="drawer-overlay" id="drawerOverlay"></div>
+
+<!-- ========== LEFT DRAWER PANEL ========== -->
+<div class="drawer-panel" id="drawerPanel" role="dialog" aria-modal="true" aria-label="Historical Election Results">
+
+  <div class="drawer-header">
+    <div class="drawer-header-left">
+      <div class="drawer-header-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div>
+        <div class="drawer-header-title">Historical Archive</div>
+        <div class="drawer-header-sub">Bihar Vidhan Sabha &middot; Last 5 elections</div>
+      </div>
+    </div>
+    <button class="drawer-close" id="drawerClose" aria-label="Close drawer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <div class="drawer-body">
+    <div class="hist-section" id="histSection">
+
+      <div class="hist-header" style="margin-bottom:18px;">
+        <h2 style="font-size:clamp(18px,3vw,24px);">Bihar elections, <em>across every year</em></h2>
+        <p>Winners and runners-up for every constituency across the 2005 (both phases), 2010, 2015 and 2020 Vidhan Sabha elections. Filter by year or search any name, party or place.</p>
+      </div>
+
+      <div class="hist-controls">
+        <span class="hist-controls-label">Filter year</span>
+        <div id="yearPills"></div>
+      </div>
+
+      <div class="hist-search-wrap">
+        <div class="hist-search-inner">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="histSearch" placeholder="Search constituency, winner name, party…" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="hist-stats" id="histStats"></div>
+
+      <div class="hist-grid-wrap" id="histGrid">
+        <div class="hist-empty"><p>Loading historical data…</p></div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ========== DRAWER LOGIC ==========
+(function(){
+  var toggle  = document.getElementById('drawerToggle');
+  var overlay = document.getElementById('drawerOverlay');
+  var panel   = document.getElementById('drawerPanel');
+
+  function openDrawer(){
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    toggle.style.left = '-200px'; // hide toggle while open
+  }
+  function closeDrawer(){
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    toggle.style.left = '0';
+  }
+
+  toggle.addEventListener('click', openDrawer);
+  overlay.addEventListener('click', closeDrawer);
+  document.getElementById('drawerClose').addEventListener('click', closeDrawer);
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeDrawer();
+  });
+})();
+</script>
  
 <script>
 /* @license
